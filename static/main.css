@@ -1,4 +1,4 @@
-html { 
+html {
   background: url(earth-from-space.jpeg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -12,6 +12,22 @@ html {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Ovo', Georgia, serif;
 }
+
+p {
+    line-height: 1.6em;
+}
+
+a:link,
+a:visited,
+a:active {
+    color: yellow;
+    text-decoration: none;
+}
+
+a:hover {
+    border-bottom: 1px solid yellow;
+}
+
 
 #overlay {
     position: fixed;
@@ -36,6 +52,27 @@ h1, h2, h3, h4, h5, h6 {
 #main {
     max-width: 700px;
     margin: auto;
+    padding: 30px;
+    background: hsla(0, 0%, 0%, 0.9);
+}
+
+#header h1 a {
+    text-decoration: none;
+    color: white;
+    margin-right: 15px;
+}
+
+#navigation {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
     padding: 15px;
-    background: hsla(0, 0%, 0%, 0.8);
+    margin: 15px;
+}
+
+#navigation li {
+    display: inline-block;
 }
