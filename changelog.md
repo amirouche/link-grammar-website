@@ -62,23 +62,23 @@ mis-set locales break Turkish).
 - Improved Cygwin and MinGW support (as well as improved MSVC support).
 - Dictionaries now specify the appropriate locale. 
 
-Version 5.3.7: (7 May 2016)
+### Version 5.3.7: (7 May 2016)
 
 - Fix another MacOS build break, regarding library exports. 
 
-Version 5.3.6: (1 May 2016)
+### Version 5.3.6: (1 May 2016)
 
 - Add missing `parses-quotes-en.txt` file that python tests need.
 - Fix build break related to lg_fgetc when libeditline is missing. 
 
-Version 5.3.5: (28 April 2016)
+### Version 5.3.5: (28 April 2016)
 
 Fix strange Apple Mac OSX behavior.
 
 - Modified (hacked) Kazakh.
 - MacOS bug fix: fgetc behaves oddly in OSX, see bug #293. 
 
-Version 5.3.4: (16 March 2016)
+### Version 5.3.4: (16 March 2016)
 
 - Fix broken handling of apostrophe (issue #281).
 - Revamp the README file; describe transitivity.
@@ -87,7 +87,7 @@ Version 5.3.4: (16 March 2016)
 - Parse priority tweaks for the OpenCog chatbot.
 - Fix Windows printing problem affecting some utf8 codepoints (issue #285). 
 
-Version 5.3.3: (23 December 2015)
+### Version 5.3.3: (23 December 2015)
 
 Fix build break for Apple Mac OSX.
 
@@ -105,7 +105,7 @@ Fix build break for Apple Mac OSX.
 - Fix for build break on Mac OSX el_capitan w/clang (bug #255).
 - Disable perl bindings by default; use Lingua::LinkParser 
 
-Version 5.3.2: (4 December 2015)
+### Version 5.3.2: (4 December 2015)
 
 Fix build break for Apple Mac OSX.
 
@@ -115,13 +115,13 @@ Fix build break for Apple Mac OSX.
 - A few dozen common computing terms added to dictionary.
 - Fix for build break on Mac OSX. 
 
-Version 5.3.1: (22 November 2015)
+### Version 5.3.1: (22 November 2015)
 
 Fix build break.
 
 - Fix build break with SAT solver. 
 
-Version 5.3.0: (22 November 2015)
+### Version 5.3.0: (22 November 2015)
 
 This is a major release of the parser, with many important changes in it. Most fundamentally, the tokenizer has been completely redesigned; the tokenizer is the device that splits sentences in sequences of words and (for non-English languages) morphemes.
 
