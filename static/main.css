@@ -1,0 +1,41 @@
+html { 
+  background: url(earth-from-space.jpeg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  color: white;
+  font-family: 'Muli', sans-serif, sans;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Ovo', Georgia, serif;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: url(overlay.png);
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+#main {
+    max-width: 700px;
+    margin: auto;
+    padding: 15px;
+    background: hsla(0, 0%, 0%, 0.8);
+}
