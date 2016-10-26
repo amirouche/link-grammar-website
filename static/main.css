@@ -14,7 +14,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 p {
-    line-height: 1.6em;
+    line-height: 1.8em;
+}
+
+p > code {
+    font-size: 0.8em;
+    padding: 5px;
+    border: 1px solid hsla(100, 0%, 100%, 0.1);
+    border-radius: 3px;
+}
+
+pre {
+    padding: 15px;
+    background: black;
 }
 
 a:link,
