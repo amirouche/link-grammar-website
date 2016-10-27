@@ -1,0 +1,513 @@
+<html><head><meta charset="utf-8" /><title>Link Grammar</title><link rel="stylesheet" href="/static/normalize.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli|Ovo" /><link rel="stylesheet" href="/static/main.css" /></head><body><div id="overlay"></div><div id="container"><div id="main"><div id="header"><h1><a href="/">Link Grammar</a></h1></div><ul id="navigation"><li><a href="/documentation.html">Documentation</a></li><li><a href="/changelog.html">ChangeLog</a></li><li><a href="http://www.abisource.com/downloads/link-grammar/">Download</a></li><li><a href="https://github.com/opencog/link-grammar">Forge</a></li><li><a href="http://groups.google.com/group/link-grammar?hl=en">Help</a></li></ul><div id="content"><h2>Dictionary Introduction</h2><h3>The Logic and Notation of Link Grammars</h3><h4>The basic Idea</h4><p>Think of words as blocks with connectors coming out. There are
+different types of connectors; connectors may also point to the right
+or to the left. A left-pointing connector connects with a
+right-pointing connector of the same type on another word. The two
+connectors together form a &quot;link&quot;. Right-pointing connectors are
+labeled &quot;+&quot;, left-pointing connectors are labeled &quot;-&quot;. Words have
+rules about how their connectors can be connected up, that is, rules
+about what would constitute a valid use of that word. A valid sentence
+is one in which all the words present are used in a way which is valid
+according to their rules, and which also satisfies certain global
+rules.</p><h4>Connectors and Disjuncts</h4><p>A simple dictionary entry would look like this:</p><pre><code>blah: A+;</code></pre><p>This means that if the word &quot;blah&quot; is used in a sentence, it must form
+an <code>A</code> link with another word; that is, there must be another word to
+the right of it with an <code>A-</code> connector. Otherwise the sentence is not
+valid. The expression following the colon is the &quot;linking requirement&quot;
+for the word.</p><p>A word may have more than one connector that has to be connected. This
+would be notated as:</p><pre><code>blah: A+ &amp; B+;</code></pre><p>A word may have a rule that either one of two (or one of several)
+connectors can be used, but exactly one must be used. In the
+dictionary, we notate this as:</p><pre><code>blah: A+ or B-;</code></pre><p>This means that if the word can make either an <code>A</code> link to the right,
+or a <code>B</code> link to the left, its use in the sentence is valid; but it
+must make one or the other, and it can not make both.</p><p>These rules can be combined. For example, consider the following
+notation:</p><pre><code>blah: A+ or (B- &amp; C+);</code></pre><p>This means that the word must make either an <code>A</code> link to the right, or
+a <code>B</code> link to the left and a <code>C</code> link to the right. No other
+combination will be valid.</p><p>Such expressions can be nested without limit, such as</p><pre><code>blah: (A+ or B-) &amp; ((C- &amp; A+ &amp; (D- or E-)) or F+);</code></pre><p>Although the <code>&amp;</code> and <code>or</code> symbols are suggestive, they are NOT Boolean
+operators! The expressions do not combine to make a Boolean algebra!
+In particular, one of the two Boolean distributive laws does not
+apply; one can distribute <code>&amp;</code> over <code>or</code>, but not the other way. So,
+one has that <code>A+ &amp; (B- or C+)</code> is equal to <code>(A+ &amp; B-) or (A+ &amp; C+)</code>. For a given word, either the disjunct <code>(A+ &amp; B-)</code> must be
+satisfied, or the disjunct <code>(A+ &amp; C+)</code> must be satisfied. One and only
+one of these can be satisfied; not both. One cannot distribute the
+other way around: <code>A+ or (B- &amp; C+)</code> has a completely different meaning
+than <code>(A+ or B-) &amp; (A+ or C+)</code>.</p><h5>Connector ordering.</h5><p>The ordering of elements in the &quot;connector expression&quot; is
+important. What that dictates is the relative closeness of the words
+that are being connected to. The further to the left the connector
+name, the closer the connection must be. For example,</p><pre><code>blah: A+ &amp; B+;</code></pre><p>This means that &quot;blah&quot; must make an <code>A</code> link to the right and a <code>B</code>
+link to the right, and the word it makes the <code>A</code> link with must be
+closer than the word it makes the <code>B</code> link with.</p><p>This only pertains, however, to connections in the same direction. For
+connectors pointing in opposite directions, the ordering is
+irrelevant. Therefore:</p><pre><code>blah: A+ &amp; B-;</code></pre><p>Means exactly the same thing as:</p><pre><code>blah: B- &amp; A+;</code></pre><p>For that matter,</p><pre><code>blah: A- &amp; B+ &amp; C+ &amp; D-;</code></pre><p>means exactly the same thing as</p><pre><code>blah: B+ &amp; C+ &amp; A- &amp; D-;</code></pre><p>For <code>or</code> expressions, such as <code>A+ or B+</code>, the ordering of the elements
+is irrelevant.</p><h5>Connector Subscripts</h5><p>In general, a connector may only link to another one with the same
+name, i.e., the same string of capital letters. However, there is
+another way of controlling how connectors may link to each other,
+using <em>connector subscripts</em>. A subscript is a lower-case letter
+following a connector-name, like <code>Ss+</code>. An <code>Ss+</code> connector can connect
+with an unspecified <code>S-</code> connector, or an <code>Ss-</code> connector, but not
+with an <code>Sp-</code> connector.</p><p>Subscripts provide a very useful mechanism for enforcing agreement in
+number, tense, gender and other inflections. Thus, in the above
+example, the lower-case <code>s</code> can be interpreted as &apos;singular&apos;, and <code>p</code>
+as &apos;plural&apos;. Decorating the <code>S</code> connector type with the lower-case <code>s</code>
+or <code>p</code> can force number agreement where it is important, and ignore it
+(by means of wild-card) where its not. Thus, for example, in English,
+singular common nouns carry the connector <code>Ss+</code>; the verb &quot;is&quot; carries
+<code>Ss-</code> and &quot;are&quot; carries <code>Sp-</code>. This clash of subscripts blocks or
+prevents the parse of &quot;a book are&quot; but allows &quot;a book is&quot;. This
+mechanism can be used to enforce both local and very long-range
+agreement in inflections.</p><p>Connector types may have multiple subscript characters, such as
+<code>Spa+</code>. An <code>Spa+</code> can connect with an <code>S-</code>, an <code>Sp-</code>, or an <code>Spa-</code>,
+but not with an <code>Ss-</code> or an <code>Ssa-</code> or an <code>Spb-</code>. In this example, <code>a</code>
+and <code>b</code> might be used to represent different genders or perhaps
+different conjugations or declensions.</p><p>An <code>*</code> subscript type is a &quot;wildcard character&quot; that can connect with
+any character. What&apos;s more, every connector string should be
+visualized as being infinite-length, padded to the right with
+<code>*</code>&apos;s. Therefore, an <code>S*+</code> is exactly the same as an <code>S+</code>. An <code>S*a+</code>
+can connect with an <code>S-</code>, an <code>Ss-</code>, an <code>Sp-</code>, or an <code>Ssa-</code>, but not
+with an <code>Ssb-</code>. Similarly, <code>S**a+</code> can connect with <code>Sx-</code>, but not
+with <code>Sxyb-</code>.</p><h5>Type Theory; Equivalence to categorical grammars</h5><p>These expressions do form an algebraic structure; formally, it is a
+non-symmetric compact closed monoid. If the act of parsing is treated
+as a transformation (that is, as an arrow between parse states), then
+<em>Link Grammar</em> forms a non-symmetric compact closed monoidal
+category. This essentially implies that <em>Link Grammar</em> is a form of
+Lambek calculus, and is a kind of categorial grammar or pregroup
+grammar. The notation, however, differs; each link type in Link
+Grammar should be understood as a simple, short name for the far more
+complex-looking types of a typical categorial grammar; there are no
+type constructors in <em>Link Grammar</em>, and so the link types are treated
+as fundamental, atomic types. In fact, they can be mapped to the
+constructed types of Lambek calculus in a more-or-less
+straight-forward way. There is no loss of generality in doing this;
+indeed, <em>Link Gramar</em> link types are considerably easier to read,
+remember and work with than the typical expressions used in categorial
+grammars. Here, the word &apos;type&apos; should be understood in the sense of
+&apos;type&apos; in &apos;type theory&apos;.</p><h5>Optional connectors</h5><p>Some connectors are optional; this is notated with curly brackets. For
+example:</p><pre><code>blah: A+ &amp; {B+};</code></pre><p>This means the word must make an <code>A</code> link to the right, and it can
+make a <code>B</code> link to the right but does not have to. Curly brackets can
+also be put around complex expressions, like:</p><pre><code>blah: (A+ or B+) &amp; {C- &amp; (D+ or E-)};</code></pre><p>An equivalent way of writing an optional expression like <code>{X-}</code> is
+<code>(X- or ())</code>. This can be useful, since it allows a cost to be put on
+the no-link option, so that the use of a link is prefered over it&apos;s
+absence. We will describe <strong>the cost system</strong> later.</p><h5>Multi-connectors</h5><p>A word can also make an indefinite number of links of the same type to
+other words. For this, we use the &quot;multi-connector&quot; symbol <code>@</code>. For
+instance, the word below could make any number of <code>F</code> links to words to
+the right (but is not required to make any).</p><pre><code>blah: (A+ or B+) &amp; {C- &amp; (D+ or E-)} &amp; {@F+};</code></pre><p>If a word has <code>@A+</code>, with no curly brackets, it is required to make at
+least one <code>A+</code> link to the right; any others are optional.</p><h5>Free word order: Bi-directional connectors</h5><p>Some languages, such as Lithuanian and Turkish, allow an almost free
+word order, as the meaning can be infered from the morphology. To make
+it easier to write dictionaries for such languages, the special <code>$</code>
+direction may be used to indicate that the connector can connect to
+either the left or right. This is merely a notational short-hand, so
+that:</p><pre><code>A$</code></pre><p>is completely equivalent to:</p><pre><code>(A+ or A-)</code></pre><p>As currently implemented, the first expression is simply expanded into
+the second during dictionary load. These bi-directional connectors can
+be used anywhere that a normal directional connector is allowed.</p><h5>Free word order: commutative AND</h5><p>For free-word-order languages, writing expressions can become quite
+tedious, when using the non-commuting &amp; operator. Thus, the dictionary
+also supports a symmetric, commutative-AND operator, denoted by
+<code>^</code>. Using this operator, the entry</p><pre><code>blah: A+ ^ B+;</code></pre><p>means exactly the same thing as</p><pre><code>blah: (A+ &amp; B+) or (B+ &amp; A+);</code></pre><p>It is particularly convenient to use with the <code>$</code> direction indicator,
+that is, as <code>A$ ^ B$</code> so that <code>A</code> and <code>B</code> can connect either to the
+left or the right, as their order is reversed.</p><p>The commutation is local; the range of the commute is limited by
+parenthesis, as usual. Thus, for the example below, the <code>C+</code> connector
+does not commute:</p><pre><code>blah: (A+ ^ B+) &amp; C+;</code></pre><p>This means exactly the same thing as</p><pre><code>blah: ((A+ &amp; B+) or (B+ &amp; A+)) &amp; C+;</code></pre><h5>Free word order; Heads and Tails</h5><p>Free word order languages introduce another tehcnical difficulty: to
+be meaningful, an explicit head and dependent must be declared. So,
+for example, in standard dependency grammar, nouns are considered to
+dominate the adjectives that modify them. Thus, the noun should be
+considered the head, and the adjective the dependent. This
+directionality can be indicated with the <code>h</code> and <code>d</code> prefixes to the
+connectors. The prefixes are not required to be used. However, if both
+appear, then <code>h</code> can only connect to <code>d</code>.</p><p>Thus, for example, <code>hA$</code> can connect to <code>dA$</code>, to <code>A$</code>, to <code>dA+</code> or to
+<code>A+</code> but it cannot connect to <code>hA$</code> or to <code>hA-</code> or to <code>hA+</code>. The first
+case holds, because <code>h</code> can mate with <code>d</code>, and both link types are
+<code>A</code>, and both are bidirectional. The second case holds becase <code>A$</code> does
+not indicate whether it wants to be a head or a dependent, thus it can
+be either; to actually connect, it is assumed to be a dependent.</p><p>The dependency relation is then drawn with arrows. Thus, for example,
+in Lithuanian, &quot;mažas&quot; means &quot;small&quot;, and &quot;namas&quot; means &quot;house&quot;. It is
+equally grammatically valid to write &quot;mažas namas&quot; and &quot;namas mažas&quot;;
+however, we want to indicate which is the head (the noun), and which
+is the dependent (the adjective). Thus, the Lithuanian dictionary
+contains:</p><pre><code>namas: hA$ ...;
+mažas: dA$ ...;</code></pre><p>and the parse fragments for these two cases would be drawn as:</p><pre><code>       +&lt;--A&lt;--+
+       |       |
+     mažas   namas</code></pre><p>and</p><pre><code>       +--&gt;A--&gt;+
+       |       |
+     namas   mažas</code></pre><p>In both cases, the arrows point from the head to the dependent. If
+either the h or the d is missing, then the corresponding arrowhead
+will not be drawn.</p><p>The English dictionary mostly does not use this dependency markup,
+although there are a few unusual cases where this can help clarify the
+proper construction. Consistent use in the English dict would also
+allows the <code>S</code> and <code>SI</code> links to be folded into one, instead of being
+treated distinctly. Again, this dependency markup is a convenience,
+rather than a fundamental aspect of the link-grammar theory. So, in
+Lithuation, the A link could have been replaced by <code>AL</code> and <code>AR</code> links
+to indicate that the head is on the left or right, respectively; but
+this would double the number of link types, and make dictionary
+authoring tedious. The dependency mechanism is essentially another
+convenient short-hand.</p><h5>Dictionary entries</h5><p>A dictionary entry thus consists of a word, followed by a colon,
+followed by a connector expression, followed by a semi-colon. The
+dictionary consists of a series of such entries. Any number of words
+can be put in a list, separated by spaces; they will then all possess
+the linking requirement that follows:</p><pre><code>blah blee blay: A+;</code></pre><p>A connector name must consist of one or more capital letters (any
+number may be used), followed by any number of lower-case letters,
+mixed with the wild-card character <code>*</code>, and terminated by <code>+</code>, <code>-</code> or
+<code>$</code>.</p><h5>Disjuncts</h5><p>We should mention one concept here that plays an important role in the
+internal workings of the parser: the <em>disjunct</em>. A disjunct is a set
+of connector types that constitutes a legal use of a word. The
+dictionary expression for any word can be represented as a set of
+disjuncts. If a word has the following expression:</p><pre><code>blah: {C-} &amp; (A+ or B+);</code></pre><p>then it has the following four disjuncts:</p><pre><code>C- A+
+A+
+C- B+
+B+</code></pre><p>These disjuncts represent all the legal uses of the word &quot;blah&quot;. Using
+<code>C-</code> and <code>A+</code> is a legal use of the word; using <code>A+</code> and <code>B+</code> is not.</p><p>Disjuncts play an important role in the internal workings of the
+parser. During the parse, the set of disjuncts is continually pruned
+down to a smaller and smaller set, until, for the final linkage, only
+a single disjunct is chosen for any given word.</p><p>The final chosen disjunct can be viewed as a very find-grained
+part-of-speech tag for that word. Thus, for example, once a parse is
+completed, if a word has the disjunct <code>S- O+</code> on it, then it is
+absolutely certain that it is not only a verb, but that it is a
+transitive verb. If <code>K+</code> also appears in the disjunct, then it is a
+transitive verb taking a particle.</p><p>Fine-grained part-of-speech tags correlate strongly with word senses,
+they do so better than the course-grained parts of speech
+(n. v. adj. adv.) commonly used to present word meanings in ordinary
+dictionaries. Thus, the fine-grained part-of-speech can be used to
+suggest likely word-senses, simply based on the syntactic structure of
+a sentence. This is explored in greater detail in (Linas Vepstas,
+2009, &quot;Correlating WordNet senses with Link Grammar Disjuncts using
+the Mihalcea algorithm&quot;, OpenCog Project, unpublished.) which shows
+how WordNet senses can be correlated with disjuncts.</p><h5>The Cost System</h5><p>It is often the case that there are multiple different parses for a
+sentence; some of the parses are far more likely to be correct than
+others. To capture this notion of liklihood or parse ranking, <em>Link
+Grammar</em> has a cost system. Different connectors or disjuncts can be
+assigned different costs; the parse with the lowest cost is the most
+likely parse. Roughly speaking, costs can be understood as minus the
+logarithm of the probability of the use of a connector or disjunct;
+they can be though of as forming part of the entropy or mutual
+information of a parse. Because of the local nature of links, costs
+can also be thought of as the weights of a Markov model describing a
+sentence.</p><p>The cost system uses square brackets (<code>[</code> and <code>]</code>). If a connector, or
+a series of connectors, is surrounded by square brackets, it is
+assigned a cost. The amount of cost is equal to the number of square
+brackets on each side: thus <code>[A+]</code> will receive a cost of 1.0, while
+<code>[[A+]]</code> will receive a cost of 2.0; etc.. To specify a floating-point
+value for the cost, follow the square bracket by the desired
+floating-point cost: thus <code>[A+]0.1234</code> gives the connector <code>A+</code> a cost
+of 0.1234. Entire expressions can be given a cost: thus
+<code>[(A+ &amp; B-) or (C+ &amp; D+)]3.14159</code> gives each of the two disjuncts <code>(A+ &amp; B-)</code> and <code>(C+ &amp; D+)</code> a cost of 3.14159. Note that costs are
+inherently commutative over the conjunction <code>&amp;</code> while being
+distributive over the disjunction <code>or</code>. Thus, <code>([A+]1.1 &amp; B+)</code> is
+equivalent to <code>[A+ &amp; B+]1.1</code> while <code>[C+ or D+]0.3</code> is the same as
+<code>([C+]0.3 or [D+]0.3)</code></p><p>The parser sums up the total cost of all disjuncts used in a parse to
+obtain a total cost for that given parse of a sentence. Parses are
+then printed in ascending cost order, as the lowest-cost parses are
+the most likely. (It is this additivity of the costs that makes it
+convenient to think of them as the logarithms of probabilities;
+probabilities multiply, logs add). Unlikely grammatical usages are
+usually given a cost of 1 or 2. Fractional costs are primarily used to
+disambiguate between nearly equivalent parses, ideally, so that the
+most likely parse is always first.</p><p>For the English dictionary, only connectors with a cost of less than
+2.9 are considered in normal parsing; connectors with a cost of 3 or
+greater are considered only in &quot;panic mode&quot;. Panic mode is described
+later. The Russian dictionary uses a different cutoff, to accomodate
+the handling of morphology.</p><p>In addition to the disjunct cost, two other costs are maintained: the
+total length of all of the links, and the total number of words that
+failed to connect in any way to the parse. It is known from
+psycho-linguistic research that sentences with short links are more
+easily understood than those with long links; thus, if two sentences
+have the same cost, then the one with the shorter link-length is
+printed first.</p><p>The failure to use a word in a parse can be considered to be a parse
+failure. Ideally, all words participate in a parse, but if this is not
+possible, then parses which use more words are prefered over those
+that use fewer.</p><p>This information is indicated in the cost vector shown above the
+linkage:</p><pre><code>Unique linkage, cost vector = (UNUSED=1 DIS=0.05 LEN=1)</code></pre><p><code>DIS</code> is the connector cost or disjunct cost for the linkage (the <code>[]</code>
+system explained above), while <code>LEN</code> is the total length of all links
+in the sentence (minus the number of words -- note, the total link
+length can never be less than the number of words). <code>UNUSED</code> indicates
+the number of unused words. Null links are described later.</p><h4>Global Rules</h4><p>As well as these &quot;word rules&quot;, which are specified in the dictionary,
+there are two other global rules which control how words can be
+connected.</p><p>First of all, links can not cross. For example, the following way of
+connecting these four words (connecting &quot;cat&quot; to &quot;dog&quot; and &quot;horse&quot; to
+&quot;fish&quot;) would be illegal. The parser simply will not find such
+linkages.</p><pre><code>
+                       +------------+
+                 +---- | -----+     |
+                 |     |      |     |
+                cat   horse  dog  fish</code></pre><p>This is the &quot;crossing-links&quot; (or &quot;planarity&quot; or &quot;projectivity&quot;)
+rule.</p><p>Secondly, all the words in a sentence must be indirectly connected to
+each other. Therefore the following way of connecting these four words
+would be illegal (if it was the entire linkage).</p><pre><code>                 +-----+     +----+
+                 |     |     |    |
+                cat  horse  dog  fish</code></pre><p>This is the &quot;connectivity&quot; rule.</p><p>A valid sentence is therefore one which can be linked up in a way that</p><p>#. all the words are used in a way that satisfies their linking requirements;
+#. the crossing-links and connectivity rules are not violated.</p><p>The no-crossing rule is enforced because such a rule appears to be
+psychologically correct for all languages; this is a well-studied
+phenomenon, and is confirmed in experimental linguistics; see, for
+example, the references below for reviews.</p><ul><li>Havelka, J. (2007). Beyond projectivity: multilingual evaluation of constraints and measures on non-projective structures. In: Proceedings of the 45th Annual Meeting of the Association of Computational Linguistics (ACL-07): 608-615. Prague, Czech Republic: Association for Computational Linguistics.</li><li>Temperley, D. (2008). Dependency length minimization in natural and artificial languages. Journal of Quantitative Linguistics, 15(3):256-282.</li><li>Gibson, E. (2000). The dependency locality theory: A distance-based theory of linguistic complexity. In Marantz, A., Miyashita, Y., and O&apos;Neil, W., editors, Image, Language, Brain. Papers from the first Mind Articulation Project Symposium. MIT Press, Cambridge, MA.</li><li>Ramon Ferrer-i-Cancho (2013) “Hubiness, length, crossings and their relationships in dependency trees”, ArXiv 1304.4086</li></ul><p>Nevertheless, there are various rare cases where it seems that
+grammatical structure could be better described by crossing
+links. Allowing these and making productive use of them is a work item
+for some future version ofthe parser.</p><h4>Link Grammar in Relation to Other Systems</h4><p>The structure assigned to a sentence by a link grammar is fairly
+unique, although it can be considered to be a type of dependency
+grammar. It can be related to categorical grammars in a direct way, as
+shown below. Rather than thinking in terms of syntactic functions
+(like subject or object) or constituents (like &quot;verb phrase&quot;), one
+must think in terms of relationships between pairs of words. In the
+sentence below, for example, there is an <code>S</code> (&quot;subject&quot;) relation
+between &quot;dog&quot; and &quot;has&quot;; a <code>PP</code> (past-participle) relationship between
+&quot;has&quot; and &quot;gone&quot;; and a <code>D</code> (determiner) relation between &quot;the&quot; and
+&quot;dog&quot;. (Ignore the lower-case letters for the moment; they will be
+explained below.)</p><pre><code>       +-----Ds-----+
+       |     +---A--+-Ss-+-PP-+
+       |     |      |    |    |
+      the black.a dog.n has gone</code></pre><p>Where possible, we try to give link-types names that have mnemonic
+significance in this way.</p><p>It may be seen, however, that parts of speech, syntactic functions,
+and constituents may be recovered from a link structure rather
+easily. For example, whatever word is on the left end of an <code>S</code> link
+is the subject of a clause (or the head word of the subject phrase);
+whatever is on the right end is the finite verb; whatever is on the
+left-end of a <code>D</code> link is a determiner; etc..</p><p>The disjunct that is actually used during a parse is best understood
+as a very fine-grained part of speech. Thus in the above example,
+<code>dog: A- &amp; Ds- &amp; Ss+;</code> should be understood as stating that &quot;dog&quot; is a
+singular noun that must take a determiner, and must be modified by an
+adjective, and can only be used as a subject of a
+sentence. Coarse-grained part-of-speech tags can be obtained by
+ignoring some of these more minor details.</p><p>Most nouns, verbs, and adjectives in the dictionary are subscripted in
+a POS-like way, with <code>.n</code>, <code>.v</code>, or <code>.a</code>. Although these subscripts
+can be treated as POS tags, indicating syntactic categories, the
+indication is not necessarily always complete or unambiguous. For high
+accuracy and complete coverage, the POS is best derived from the
+disjunct.</p><p>The constituent structure of sentences, while not absolutely explicit,
+is also quite &quot;close to the surface&quot; in linkage structures. This
+requires some explanation. Imagine a linkage as a graph through which
+paths can be traced, similar to a street map. Constituents can be
+defined as sets of words which can be reached from certain links,
+tracing in a certain direction. For example, a verb phrase is
+everything reachable from an <code>S</code> link, tracing to the right − that is,
+not tracing through the left end of the <code>S</code> link itself. In the
+sentence below, &quot;have changed during the past 3 1/2 years&quot; is a verb
+phrase, since all these words can be reached from an <code>S</code> link (between
+&quot;addresses&quot; and &quot;have&quot;) going to the right. &quot;Would be an
+administrative nightmare&quot; is <strong>not</strong> part of this verb phrase since
+these words cannot be reached from the S link in question, except by
+tracing through the left end of the link (&quot;addresses&quot;). For noun
+phrases there are several possibilities. Anything that can be reached
+from an O link tracing right is an NP, (such as &quot;an administrative
+nightmare&quot;) as is anything reachable from a J link tracing right (&quot;the
+two million customers whose addresses have changed during the past 3
+1/2 years&quot;).</p><pre><code>  +---------------------------------------------------------------------------
+  |                                                      +--------------------
+  +--------------Wd--------------+                       +---------------Opn--
+  |   +------------Ds------------+                       |             +----DD
+  |   |       +----G----+---AN---+----Ss---+--TH-+---Ce--+----K---+    |   +--
+  |   |       |         |        |         |     |       |        |    |   |
+///// a Commonwealth Edison spokesman.n said.v that tracking.g down.e the two
+
+
+----------------------------Xp---------------------------------------------
+---------------------------------Ss*g--------------------------------------
+-------------+                                            +-----------Jp---
+---+         |                                            |    +-----DD----
+NN-+---Dmc---+---Mr---+--Dmcw--+----Sp---+---PP--+---MVp--+    +--L--+   +N
+   |         |        |        |         |       |        |    |     |   |
+million customers.n whose addresses.n have.v changed.v during the past.a 3
+
+
+---------------------------------------------------------+
+---------------+                                         |
+-------+       |      +------------Ost------------+      |
+-+     |       |      |   +-----------Ds----------+      |
+N+-Dmc-+       +--Ix--+   |         +------A------+      |
+ |     |       |      |   |         |             |      |
+1/2 years.n would.v be.v an administrative.a nightmare.n .</code></pre><p>With version 4.0, we have incorporated a system for deriving a
+traditional constituent representation of a sentence from a
+linkage. Click here for more information about this; you can
+experiment with this system at the online demo page.</p><p>1.5. LINK GRAMMAR IN RELATION TO CATEGORICAL GRAMMARS. Link grammar appears to be isomorphic to categorial grammars (Lambek calculus), in that there there appears to be a direct and immediate way of translating from the one to the other (although a formal, rigorous proof is currrently lacking). In a categorical grammar, words are decorated with links, in a fashion more or less identical to that of link-grammar. The primary difference is that, in categorical grammars, the connector types are written as complex, compound types (in the sense of &quot;type theory&quot; or &quot;monoidal category&quot;), such as NP/N or N/N or (NP\S)/NP. In link-grammar, these compund types are replaced by shorter, more human-friendly abbreviations: thus, for example, the NP/N link type is just the D link type in link-grammar, linking a determiner to a noun. The N/N link type is called A in link grammar: it links adjectives to nouns. The (NP\S)/NP link type is characteristic of a transitive verb, corresponding to S- &amp; O+ in link-grammar.</p><p>A particularly simple way of seeing the correspondance can be obtained by comparing the puzzle-pieces diagrams given in the original link-grammar publications to the puzzle-piece diagrams popularized by Bob Coecke: the diagrams are essentially identical, and thus provide an easy, diagrammatic &quot;proof&quot; of the equivalence between link-grammar and grammars based on monoidal categories. See, for example, the diagram in:</p><pre><code>New Scientist Weekly (11 December 2010) &quot;Quantum links let computers read&quot;, page 10. Here: http://www.cs.ox.ac.uk/people/bob.coecke/NewScientist.pdf
+Dimitri Kartsaklis, Mehrnoosh Sadrzadeh, Stephen Pulman, Bob Coecke, &quot; Reasoning about Meaning in Natural Language with Compact Closed Categories and Frobenius Algebras (2014) arXiv:1401.5980 [cs.CL]</code></pre><ol><li>Using the Parser</li></ol><p>2.1. RUNNING VERSION 5. To run version 5 of the parser, you must first unpack the link-grammar sources, and then follow the README file for specific information on how to compile and install.</p><p>To actually run the program along with the dictionary (and related files) that we provide, type &quot;./link-parser&quot;. The parser will then give you a prompt:</p><pre><code>      linkparser&gt;</code></pre><p>Type in a sentence, and press RETURN. The parser will tell you whether that sentence has a valid linkage or linkages, given the dictionary it is using, and it will output the linkage that it finds, showing the words that are linked together and the type of link between them. The parser will then prompt you for another sentence. To exit the parser, type &quot;ctrl-D&quot;.</p><p>For each sentence,the parser will do an exhaustive search for linkages; it will generate all valid linkages. It will begin by displaying the lowest-cost linkage it finds. Other linkages may then be seen, one at a time, by pressing RETURN. (The ordering of the output is determined by the cost system: see Section 1.2.11.) If the parser cannot find any complete linkages of a sentence, it may simply stop and say &quot;No complete linkages found&quot;; or it may try to parse the sentence, ignoring some of the words. This depends on whether &quot;null-links&quot; are in use; see section 7.1.</p><p>A large number of options control the behaviour of the parser. These can be listed by typing &quot;!variables&quot; at the prompt. General help is obtained by typing &quot;!help&quot;.</p><p>2.2. USING OTHER DICTIONARIES. The more general way of running the parser is by typing</p><pre><code>     ./link-parser [dictionary]</code></pre><p>where &quot;dictionary&quot; may be any of:</p><pre><code>An absolute file-system path to a dictionary: e.g. /usr/share/link-grammar/en or /usr/local/share/link-grammar/ru
+A relative file-system path to a dictionary: e.g. ./my_home_dir/link-grammar-4.3.5/data/en
+The name of a language, e.g. en. In this case, the default dictionary install location will be searched for dictionaries for the language en.</code></pre><p>Dictionaries for the English (en) and Russian (ru) are complete and extensive. The Arabic (ar) and Persian (fa) dictionaries offer fairly comprehensive coverage. A prototype dictionary for German (de) exists, and there are proof-of-concept dictionaries for Hebrew (he), Indonesian (id), Lithuanian (lt), Turkish (tr) and Vietnamese (vn).</p><p>See section 6 for a discussion of post-process files, and section 4.5 for a discussion of affix files. The constituent-knowledge file is the post-processing file used in deriving the constituents; click here for information about this. The default files are 4.0.knowledge, 4.0.affix, 4.0.regex, and 4.0.constituents.</p><p>2.3. THE API. We have developed an API for designing customized versions of the parser and incorporating them into applications. It is important to realize that version 5.0 of the parser is just one way of configuring the API. In the following sections, we discuss many features of version 5.0 of the parser. Some of these features can be modified by editing the dictionary, as we explain here. Other features can be modified by configuring the API differently. For more about the API, see our API documentation.</p><ol><li>General Features of the Parser</li></ol><p>3.1. MACROS. It is possible to define a single symbol as a longer connector expression, and then use that symbol to refer to the longer expression in the dictionary. To do this, simply choose a name for the longer expression, and surround it with angle brackets (&lt;&gt;). Then treat it like a word in the dictionary; list the name, then a colon, then the connector expression that it should stand for. For example, we define &quot;&lt;noun-main-s&gt;&quot; in the dictionary as follows:</p><pre><code>&lt;noun-main-s&gt;: (Ss+ &amp; &lt;CLAUSE&gt;) or SIs- or Js- or Os- or
+    ({[Bsj+]} &amp; Xd- &amp; Xc+ &amp; MX-);</code></pre><p>We then use this symbol in many other actual word definitions.</p><p>We use many of these macros in the dictionary, to reduce redundancy; there are many connector expressions that are used over and over in longer expressions. Here are a few common ones:</p><pre><code>&lt;noun-main-...&gt;: the &quot;main&quot; connectors for nouns, used to link them to the rest of the sentence (as subject, object, etc).
+
+&lt;noun-sub-...&gt;: the &quot;sub&quot; connectors for nouns, used to link them to modifiers like prepositional phrases and relative clauses.
+
+&lt;verb-...&gt;: These macros are for verbs; they distinguish different forms of the same verb. That is, they contain connector types - like S-, PP-, etc. - that distinguish different forms of the same verb. &lt;verb-s&gt; is for singular verbs, &lt;verb-pp&gt; for past participles, &lt;verb-sp,pp&gt; for forms which are both simple past and past participle, etc..
+
+&lt;vc-...&gt;: These macros are for verb complements; they stand for different complement expressions. Some verbs can connect to a direct object, using O+; some can connect to an infinitive verb, using TO+; and so on.</code></pre><p>3.2. WORD-FILES. The most basic way to write the dictionary is to list all the words in a particular category, followed by a colon, followed by their connector expression. There is another way, however. One can put all the words in a category in a file, choose a name for the file, and put that filename in the dictionary in place of the list of words. When listed in the dictionary, the filename must be preceded by a slash (/).</p><p>Here are the word files that are in use at the moment:
+words.n.1   singular countable (i.e. not mass) nouns
+words.n.2.s     plural nouns ending in &quot;s&quot;
+words.n.2.x     plural nouns not ending in &quot;s&quot;
+words.n.3   mass nouns
+words.n.4   nouns that may be mass or countable
+words.n.p   proper names that are also ordinary words when not capitalized (see Section 3.1 for explanation)
+words.n.t   nouns that can be used as titles, like &quot;president&quot;</p><pre><code>(In the following verb files, the final number indicates the verb form. &quot;.1&quot; is for infinitive-plural forms, &quot;.2&quot; is for singular forms, &quot;.3&quot; is for simple-past / past-participle forms, &quot;.4&quot; is for present participles, &quot;.5&quot; is for gerunds. On intransitive verbs, the present participle and gerund expression are combined into a single dictionary entry.)</code></pre><p>words.v.1.(1-4)     intransitive verbs
+words.v.1.p     special two-word passives (&quot;lied_to_&quot;, &quot;paid_for&quot;)
+words.v.2.(1-5)     optionally transitive verbs
+words.v.4.(1-5)     transitive verbs
+words.v.5.(1-4)     intransitive verbs that may form two-word verbs with particles like &quot;up&quot; and &quot;out&quot;
+words.v.6.(1-5)     optionally transitive verbs that may form two-word verbs
+words.v.8.(1-5)     transitive verbs that may form two-word verbs
+words.v.10.(1-4)    verbs that may be used in quotation expressions, like &quot;said&quot; (&quot;John is here, he said&quot;).
+words.adj.1     ordinary adjectives, with no special complements
+words.adj.2     ordinary comparative adjectives (e.g. &quot;bigger&quot;)
+words.adj.3     ordinary superlative adjectives (e.g. &quot;biggest&quot;)
+words.adv.1     ordinary manner adverbs (&quot;quickly&quot;, &quot;angrily&quot;)
+words.adv.2     ordinary clausal adverbs (&quot;fortunately&quot;)
+words.adv.3     adverbs like &quot;chemically&quot;
+words.y     common year numbers (&quot;1990&quot;, etc.)
+words.s     US state names and abbreviations</p><p>3.3. WORD SUBSCRIPTS. A single word can be given several different dictionary entries. To do this, the entries must be distinguished by giving the words different subscripts. Words may be followed by a subscript such as &quot;.n&quot;. For example:</p><pre><code>run.n: A+ or B+...
+run.v: C+ or D+...</code></pre><p>If a word is listed more than once with the same subscript, or if it is listed once with a subscript and once without, the parser will generate a warning message and will ignore one of the entries.</p><p>The parser starts at the right end of every string of characters. Any sequence of ASCII letters, possibly with a dash, to the right of the right-most period in the string will be considered the subscript. (Periods at the end of a string are simply considered part of the string; see Section 4.5 below.)</p><p>In searching for linkages, the parser will consider each entry for the word as a different word, and will generate all linkages found for all entries. The subscript is shown in the display, thus indicating which entry the parser chose for a particular linkage.</p><p>The main word subscripts we use are &quot;.n&quot; for nouns, &quot;.v&quot; for verbs, and &quot;.a&quot; for adjectives. Most nouns, verbs, and adjectives are subscripted in this way. Certain other subscripts are used to distinguish two forms of the same word; some subscripts are used to refine a linguistic category for a word. A list of the most commonly used subscripts is given below.</p><p>Although the subscripts can be used as part-of-speech indicators, not all words are subscripted, and some subscripts are ambiguous. A robust POS-tagging strategy based in link-grammar would use subscripts in combination with the fine-graned part-of-speech that a disjunct represents.</p><p>.a
+Adjective
+.a-c
+Adjective, comparative/relative
+.a-s
+Adjective, superlative
+.b
+Given names that can be masculine or feminine
+.c
+Currency names
+.d
+(Not used/not defined)
+.e
+Adverbs
+.eq .eqn
+Binary operators e.g. 2 + 2
+.f
+Given names that are always feminine
+.g
+Gerund
+.h
+(Not used/not defined)
+.i
+Misc usage, mostly pertaining to units, lengths, times.
+.id
+Identifiers: e.g. &quot;vitamin A&quot;
+.ij
+Interjections
+.j
+Conjunctions.
+.j-a
+Conjunctions -- adjectives: &quot;the black and white cat&quot;
+.j-c
+Conjunctions -- comparatives: &quot;he is bigger, and badder, than the pope.&quot;
+.j-g
+Conjunctions - proper names: e.g. &quot;The Great Southern and Western Railroad&quot;
+.j-m
+Conjunctions -- post-nominal modifiers
+.j-n
+Conjunctions -- nouns: &quot;Jack and Jill&quot;
+.j-o
+Conjunctions -- ditransitive e.g. &quot;I gave Bob a doll and Mary a gun&quot;
+.j-opnr
+Clause openers -- e.g. &quot;but you are wrong!&quot;
+.j-q
+Conjunctions -- Conjoined question words.
+.j-r
+Conjunctions -- adverbs/prepositional phrases e.g. &quot;the man for whom and with whom ...&quot;
+.j-ru
+Conjunctions -- interval e.g. &quot;two to threefold more abundant&quot;
+.j-sum
+Conjunctions -- numerical sums: e.g. &quot;It&apos;s a hundred and two in the shade.&quot;
+.j-v
+Conjunctions -- verbs: &quot;sang and danced&quot;
+.k
+(Not used/not defined)
+.l
+Location (cities, states, towns, etc.)
+.m
+Given names that are always masculine
+.n
+Noun
+.n-u
+Noun, uncountable (mass noun)
+.o
+Organizations (corporations)
+.ord
+Ordinal numbers e.g. first second third
+.p
+Plural count nouns
+.q
+verb, Question-related or paraphrasing
+.q-d
+verb, past tense
+.r
+Prepositions and related
+.s
+Singular, mass or count nouns
+.t
+Titles, roles. e.g. President, Captain
+.ti
+Time, date e.g. AM, PM, December 2nd
+.tz
+Timezones e.g. CDT, UTC
+.u
+Units of measurement
+.v
+Verb
+.v-d
+Verb, past tense
+.w
+Verb
+.w-d
+Verb, past tense
+.x
+Prefix abbreviations, e.g. Mr., Dr., Mrs.
+.y
+Postfix abbreviations, e.g. Ave., St., Co.
+.z
+(Not used/not defined)</p><p>The above is not a complete list; other, less frequently used subscripts occur in the dictionary. Some of these are used in an ad-hoc, inconsistent manner to disambiguate words. Such ad-hoc usage is subject to change, whereas the above usage is maintained over different versions of the dictionary. Over time, the dictionary has evolved (and will continue to evolve) in such a way that more suffixes are introduced to define more fine-grained morphological and semantic categories.</p><p>3.4. BATCH-MODE. It is possible to make a file of sentences, and then run them through the parser all at once. Simply create a file, with one sentence on each line. When running the parser, type</p><pre><code>parse [dictionary name] &lt; [filename]</code></pre><p>When inputting a file of sentences, it is sometimes useful to use another feature known as &quot;batch-mode&quot;. In this mode the user indicates in the input file which sentences should be rejected, and which should be accepted; the parser then notifies the user when its judgments differ. To say that the parser &quot;rejects&quot; a sentence means that it does not find any linkages without null-links. (Batch-mode does not allow null-links; the &quot;!batch&quot; command automatically turns null-links off. See section 7.1 for an explanation of null-links.) To prepare a file for use in batch-mode, put &quot;!batch&quot; at the top of the file. Then, for each sentence that should be rejected, precede the sentence with &quot;*&quot; in the file. If it should be accepted, precede it with nothing. After processing a batch file, the parser will then print the number of errors in the file: i.e., the number of sentences on which its judgments differ with the judgments indicated by the symbols.</p><p>The symbol &quot;:&quot; can also be used at the beginning of a line. This means &quot;linkage should be found with non-zero cost&quot;. If a linkage is found with zero cost, or no linkage is found, an error will be reported. (An absence of symbol means &quot;linkage should be found, either with cost or without&quot;.)</p><p>When running batch-mode, the parser will ordinarily output only the number of errors it makes. Thus it is primarily useful for checking sentences, to see if a particular dictionary produce the desired results (or to make sure that no earlier work has been broken by recent changes). If one begins the batch file with the command &quot;!echo&quot;, the parser will also output the sentences as it parses them, as well as display information for the sentences on which its judgments disagree with the user&apos;s.</p><p>Our github directory contains several large batch-files; the three most important ones are &quot;corpus-basic.batch&quot;, &quot;corpus-fixes.batch&quot; and &quot;corpus-fix-long.batch&quot;. The &quot;corpus-basic.batch&quot; file contains about 900 sentences which systematically test many features of the parser. Many sentences are incorrect, and are marked with &quot;*&quot;. With version 4.1, this file parses with 0 errors. More recent parser versions expand parse coverage to a larger set of sentences, in part by loosening restrictions on allowed constructions. This has caused approximately 50 &apos;ungrammatical&apos; sentences to be accepted, albeit some rather unusual parses: for example, an ungrammatical sentence with the personal pronoun &quot;I&quot; might not make sense, but can be parsed when &quot;I&quot; is considered to be a roman numeral: e.g. &quot;Pope Pious I&quot;</p><p>The &quot;corpus-fixes.batch&quot; contains another 4 thousand sentences, many of which were not parsed by the 4.0 parser, but most of which are handled correctly by later versions. Other corpus-batch files contain samples from biotech, Voice-of-America and the like. Other languages contain similarly-named batch files as well.</p><p>3.4.1 Unit tests The batch file can be thought of as a loose kind of unit test. A stricter, proper unit test, testing the parser, the tokenization stage, and various parts of the API, can be found in the python bindings directory. Specifically, it is in ./bindings/python-examples/tests.py. See the accompanying README file for more information.</p><p>3.5. COMMANDS AND VARIABLES. It is possible to modify the running of the parser in various ways, while running it, by typing in certain commands. The basic commands can be seen by typing &quot;!help&quot;. Others are listed under &quot;!variables&quot;. Many of these are self-explanatory. For example, &quot;!width&quot; changes the width of the parser display. Other commands relate to speed and robustness features; see section 7.</p><p>A few commands deserve special mention. One useful command is &quot;!![word]&quot;. This queries the parser for information about a particular word. The parser will output list any entries of the word, with their word subscripts, the word-files in which they appear, if any, and the number of disjuncts on each word. (A disjunct is a combination of connectors which constitutes a legal use of the word.) Multiple entries of a word will be listed with their word subscripts.</p><p>The &quot;!verbosity&quot; command controls the amount of information that is displayed. With &quot;!verbosity=1&quot; (the default), information such as the following is shown:</p><p>linkparser&gt; the quick brown fox jumped over the lazy dog
+++++Time                                          0.04 seconds (0.04 total)
+Found 2 linkages (2 had no P.P. violations)
+Linkage 1, cost vector = (UNUSED=0 DIS=0 AND=0 LEN=18)</p><p>+---------Ds---------+              +-------Js------+
+|     +-------A------+              |   +-----Ds----+
+|     |       +---A--+---Ss--+--MVp-+   |     +--A--+
+|     |       |      |       |      |   |     |     |
+the quick.a brown.a fox.n jumped.v over the lazy.a dog.n</p><p>Press RETURN for the next linkage.
+linkparser&gt;</p><p>With &quot;verbosity=0&quot;, no information is shown except for the graphic linkage display. With verbosity set at 2 or 3, information is shown about the individual stages of parsing the sentence. (Information is also shown about the constituent derivation process, if this is being done.) If one wants to suppress the graphic display as well, this can be done with the command &quot;!graphics&quot;. (This can be useful it one wants to have only the constituent bracketing as output; in that case, type &quot;!verbosity=0&quot;, &quot;!graphics&quot;, and &quot;!constituents=1 (or 2)&quot;.</p><ol><li>Special Features of the Dictionary</li></ol><p>4.1. CAPITALIZATION. The parser respects capitalization: that is, the use of upper- and lower-case letters. If a string is listed in the dictionary beginning with a capital letter, then an input word will match only it if it has the same capitalization. (The same with strings with capital letters in the middle, although this is probably of little use.) However, there are a few special cases here.</p><p>Any word which is capitalized but is not listed in the dictionary is assigned to the special dictionary entry &quot;CAPITALIZED_WORDS&quot;. This dictionary entry is designed to handle proper (given) names. There is another entry, &quot;PL_CAPITALIZED_WORDS&quot;, for capitalized words ending in an &quot;s&quot; -- this allows parses that treat the capitalized word as a plural. The guessing and assignment of words to these categories is controlled by the 4.0.regex file, which uses regular expressions to identify unknown word types. It includes a pattern for recognizing roman numerals, Latinate nouns and adjectives (common in biomedical texts) and the like; this is described in greater detail below, under &quot;Unknown Words&quot;.</p><p>A special situation occurs with words at the beginning of the sentence. If the first word of the sentence has an uncapitalized first letter, it is treated in the normal manner. If it is capitalized, the parser will first look to see if it is listed in the dictionary as a either a capitalized word or an uncapitalized word. If it is listed as both, the parser will try to use it in both ways. This allows certain common names, such as &quot;Will&quot;, &quot;Sue&quot; and &quot;Rob&quot; to also be recognized as nouns or verbs.</p><p>If the first word is listed in the dictionary only as uncapitalized, then a question is asked: &quot;can this word plausibly be a proper name, or a part of a proper name?&quot;. If it is, then the parser will attempt to use it both as a capitalized, proper name, and as an uncapitalized word. So, for example, if a sentence begins with the words &quot;Great Southern Railroad&quot;, then parses are attempted by considering both &quot;great.a&quot; (the adjective) and &quot;Great&quot; (a part of a proper name).</p><pre><code>                +------Ost------+
+                |  +-----Dsu----+
+ +---G---+--Ss--+  |    +---A---+
+ |       |      |  |    |       |</code></pre><p>Great Southern is.v a good.a company.n</p><p>The G link above indicates that &quot;Great Southern&quot; is an entity name, and is thus handy for entity identification, whereas the A link below simply indicates that the &quot;Southern&quot; is modified by the adjective &quot;great&quot;.</p><pre><code>                  +------Ost------+
+                  |  +-----Dsu----+
+  +----A---+--Ss--+  |    +---A---+
+  |        |      |  |    |       |</code></pre><p>great.a Southern is.v a good.a company.n</p><p>In general, nouns and adjectives are taken to be &quot;plausible&quot; proper names. Specifically, the two markers &lt;marker-common-entity&gt; and &lt;marker-entity&gt; are used in the dictionary to indicate lower-case words that might also be plausible upper-case entity names when they occur at the start of a sentence.</p><p>The situation at the beginning of the sentence also applies after a colon. Sometimes, after a colon, the following word is capitalized as if it was the beginning of a sentence; the parser recognizes this. So, for example, the following sentence is accepted: &quot;The problem is this: The dog ran.&quot;</p><p>4.2. HYPHENATED EXPRESSIONS. The dictionary also contains a special category called &quot;HYPHENATED_WORDS&quot;. If a string contains a hyphen, and it is not listed in the dictionary, the parser will assign it to the category &quot;HYPHENATED_WORDS&quot;. This is, again, useful, since hyphenated words are used somewhat &quot;productively&quot;, and it would be very difficult to list them all.</p><p>4.3. NUMBER EXPRESSIONS. The dictionary contains a category &quot;NUMBERS&quot;. Any numerical expression -- that is, a string consisting entirely of numerical characters -- will be assigned to this category unless it is explicitly listed elsewhere in the dictionary. (The string may also contain a period, i.e. a decimal point, or a comma, as in &quot;3,287&quot;. It may also contain a colon; thus time expressions like &quot;4:30&quot; are treated as generic numbers.)</p><p>4.4. UNKNOWN WORDS. The dictionary also permits a feature known as &quot;unknown words&quot;. A category can be defined using the string &quot;UNKNOWN-WORD.x&quot;, where x is any subscript. If a word beginning with a lower-case letter is typed in that is not recognized, it will be assigned to that category. The word is then displayed with a question-mark in brackets, like &quot;blah&quot; below:</p><pre><code>  +-----Wd----+
+  |    +---D--+--Ss--+-Pp+
+  |    |      |      |   |
+///// the blah[?].n is here</code></pre><p>Several different unknown word categories may be generated, labeled with different subscripts: for example, corresponding to nouns, verbs, and adjectives and adverbs. (These are the four categories we use, labeled .n, .v, .a, and .e, respectively.) The parser will search for all linkages that can be found using each entry. If it only finds a linkage for the &quot;noun&quot; category, then the output will show the unknown word labeled &quot;.n&quot;: in effect, the parser is then guessing that the word is a noun.</p><p>Version 4.0 of the parser has an new feature for handling unknown words, known as &quot;morpho-guessing&quot;. This is a system for guessing the syntactic category of an unknown word (that is, a word not explicitly listed in the dictionary) based on its spelling. Words that end in &quot;-s&quot; are assumed to be plural nouns or singular verbs; these are assigned to a category listed as &quot;S-WORDS&quot; in the dictionary. Similarly, words ending in &quot;-ed&quot; are assumed past-tense (or passive) verbs; those ending in &quot;-ing&quot;, present participles; those ending in &quot;-ly&quot;, adjectives. This greatly improves the ability of the parser to handle sentences containing multiple unknown words. Words that have been treated in this way are marked with a &quot;[!]&quot;. Click here for more information about this feature.</p><p>Version 4.5 adds support for a spelling checker, which can be used to guess at alternate spellings for unknown words. This is described in greater detail here.</p><p>4.5. PUNCTUATION AND AFFIX-FILES. The parser is capable of handling a variety of punctuation symbols. There are two issues to be discussed here. One is the listing of symbols in the dictionary; the other is the way they are &quot;read&quot; by the parser when they are used in sentences.</p><p>Punctuation symbols can be listed in the dictionary just like words, and given ordinary linkage expressions. The same is true for strings containing multiple punctuation symbols or a mixture of letters and punctuation. The problem here is that certain punctuation symbols are also used as the &quot;syntax&quot; of the dictionary: colons, semi-colons, ampersands, etc.. Our solution to this is as follows: when listing these special characters, or a string containing them, one must put them in quotation marks:</p><pre><code>&quot;;&quot;: A+ or B-;
+&quot;+&quot;: C+ or D-;</code></pre><p>(The special characters that must be treated this way are precisely those which are used in the dictionary in a &quot;syntactic&quot; way: &quot;(&quot;, &quot;)&quot;, &quot;{&quot;, &quot;}&quot;, &quot;[&quot;, &quot;]&quot;, &quot;@&quot;, &quot;%&quot;, &quot;&amp;&quot;, &quot;*&quot;, &quot;+&quot;, &quot;-&quot;, &quot;/&quot;, &quot;&lt;&quot;, &quot;&gt;&quot;.)</p><p>When punctuation symbols are used in sentences, they will be used in linkages according to the connector expressions listed in the dictionary, in the normal way. There is a difference, however. It may be noted that although many punctuation symbols are similar to words in the ways they are used, they are often not separated from preceding or following words by spaces. In order for these symbols to be recognized as separate units, then, they must be &quot;stripped off&quot;: that is, a space must be inserted between the symbol and the adjacent word.</p><p>With version 4.0 we provide a new system for handling this &quot;stripping off&quot; process. Rather than being hard-wired into the system, it can now be easily modified and expanded by the user, using an &quot;affix file&quot; which is read in by the parser when the program is run. An affix file is similar in format to a link grammar dictionary, with lists of strings (they need not be individual symbols, but may be any length), followed by a connector type. Strings to be stripped off from the left are listed under the category &quot;LSTRIP+&quot;; those to be stripped off from the right are listed under the category &quot;RSTRIP+&quot;. In the affix-file that we provide, for example, &quot;$&quot; is listed as a &quot;LSTRIP+&quot; symbol; &quot;,&quot; is listed as a &quot;RSTRIP+&quot; symbol. (Click here for more information about affix files.)</p><p>In the default affix file we provide (4.0.affix), the &quot;RSTRIP+&quot; strings include these:</p><pre><code>, . ! ? % ) : ; &apos; &apos;s &apos;re &apos;ll &apos;ve &apos;d ...</code></pre><p>The &quot;LSTRIP+&quot; strings include these:</p><pre><code>$ ( ...</code></pre><p>Note that we also use the affix file for a few things besides punctuation. The &quot;right-stripped&quot; list includes strings like &quot;&apos;s&quot;, representing a possessive (&quot;John&apos;s&quot;) or a contraction (&quot;he&apos;s&quot;); strings like &quot;&apos;re&quot; (as in &quot;you&apos;re&quot;) are also included, representing the fact that these should really be treated as independent words. A further point: the parser will perform this stripping process on a string repeatedly, if necessary, perhaps stripping off several characters. For example, it will convert the first sentence below into the second:</p><pre><code>John, a professor (who got a raise of 5%), is here
+
+John , a professor ( who got a raise of 5 % ) , is here</code></pre><p>There is one difference between right-stripped and left-stripped characters. Right-stripped characters can also be used at the right end of a string defined in the dictionary; for example, one could actually define &quot;Mrs.&quot; or &quot;it&apos;s&quot; as ordinary dictionary entries. Before stripping off right-stripped characters, the parser will make sure that the string is not present in the dictionary as it appears.</p><p>If punctuation symbols are used in the middle of strings, they will be treated just like any other symbols. (And if they are used in sentences in undefined strings, they will be treated as some kind of unknown string.) (Note that periods are special, however; if the string ends with a period followed by a letter, this will be interpreted as the word subscript, not part of the string. See section 3.3 above.)</p><p>One exceptional case is quotation marks. Quotation marks may not be defined in the dictionary; and they are simply ignored when they are used in sentences. This is sufficient to handle most uses of quotes; generally, the presence of quotes does not affect the well-formedness of sentences, and they often only subtly affect meaning. However there are a few constructions, such as the last pair of sentences below, which seem to be correct only when quotes are included.</p><pre><code>&quot;John is leaving,&quot; she said
+John is leaving, she said
+I am meeting with my &quot;advisor&quot; today
+I am meeting with my advisor today
+She said, &quot;John is leaving&quot;.
+?She said, John is leaving.</code></pre><p>We are unable to control such usages at the moment.</p><p>The percent sign (&quot;%&quot;) is used for comments. If a % appears at the beginning of a sentence inputted to the parser, that sentence will simply be ignored. This is useful if one is inputting a file of sentences, and one wants to include some comments in the file. A % at the beginning of a line can also be used for putting comments in a dictionary.</p><p>4.5.1. MEASUREMENT UNITS. Measurement units are treated in more or less the same way as suffixes. This allows sentences such as &quot;It is 5ft long&quot; to be parsed as &quot;It is 5 ft long&quot;, with &quot;ft&quot; identified as a unit of measure.</p><p>4.5.2. CURRENCY SYMBOLS, UTF-8 MARKUP. The affix file also recognizes many different types of foreign currency symbols, as well as various styles of parenthesis most commonly seen in Asian texts containing English.</p><p>4.6. THE SORTING OF UNKNOWN STRINGS. Notice that the parser must make decisions about how to handle strings of characters which are not explicitly listed in the dictionary. The ordering of the decisions is important. At the moment, the parser proceeds as follows:</p><pre><code>If the string is the first string in a sentence, and its first letter is capitalized, then generate the lower-case-first-letter form of the string, and perform the following steps on both the capitalized and lower-case forms.
+Strip off any &quot;strip-able&quot; strings from the left end of the string (as described above). Perform subsequent steps on both the stripped string and the remainder.
+Look up the string in the dictionary as is. If there is an exactly matching string in the dictionary, use that.
+Strip off any &quot;strip-able&quot; punctuation string from the right end of the string (as described above). Repeat step 3 on both the punctuation string and the remaining string. If there is more than one such string, repeat steps 3 and 4 repeatedly.
+If the string still has not been assigned, see if it matches any of the &quot;guessed-word&quot; categories. Guessed words are controlled by regular-expression matching to regular expressions in the 4.0.regex file. Thus, for example, if the string begins with a capital letter, assign it to the category &quot;CAPITALIZED-WORD&quot;, which treats such words as proper names. If the string consists entirely of numbers, assign it to the category &quot;NUMBERS&quot;. Words ending in &quot;s&quot; are guessed to be plural nouns, while words ending in &quot;us&quot; or &quot;ae&quot; are guessed to be Latinate adjectives (e.g. luteus,influenzae), and so on.
+If the string still has not been assigned, assign it to any &quot;UNKNOWN-WORD&quot; categories.
+If none of these alternatives are available, the parser will say &quot;the following words are not in the dictionary: [whatever]&quot;, and will give no other output for the sentence.</code></pre><p>If at any point the parser finds more than one way of analyzing a string, it generates both of them, and tries parsing the sentence with both forms of the string. This might happen a) if there are multiple forms of the word in the dictionary (with different subscripts); b) if the string is capitalized and occurs at the beginning of the sentence, and both the capitalized and lower-case forms are listed in the dictionary; or c) if there is more than one UNKNOWN-WORD category.</p><p>Any of the generic word categories - UNKNOWN-WORD (any or all of them), S-WORD (or the other &quot;guessed word&quot; categories), CAPITALIZED-WORD, HYPHENATED-WORD, or NUMBERS - may be omitted from the dictionary. In this case, the parser will skip over the corresponding step in the procedure above. For example, if &quot;HYPHENATED-WORD&quot; is omitted from the dictionary, and an unknown hyphenated word is entered, it will be treated like an UNKNOWN-WORD. If no UNKNOWN-WORD categories are present, and a string is entered which fits none of the other categories, the parser will proceed to step 9 above.</p><p>4.7. THE WALL(S). It proved to be useful to imagine that there was a dummy word at the beginning of every sentence. We call this &quot;the wall&quot;. The wall has a linking requirement like any other word; it is listed in the dictionary under &quot;LEFT-WALL&quot;. If this entry is included in the dictionary, the wall will be automatically inserted at the beginning of every sentence. Because of the connectivity rule, it is then necessary for the wall to be linked to the rest of the sentence in order for the sentence to be valid.</p><p>There is also a &quot;right-hand wall&quot;, which is similar to the original wall at the other hand of the sentence. This is only needed for certain punctuation phenomena. In most sentences, we use a special &quot;RW&quot; connector to simply connect the left hand wall to the right hand one. The right-wall&apos;s dictionary entry is &quot;RIGHT-WALL&quot;. (Since the left-wall is much more important than the right-wall, we often refer to the left-wall simply as &quot;the wall&quot;.)</p><p>In most sentences, the left-wall connects to the sentence with a &quot;Wd&quot; link, and the right-wall connects to the left-wall with &quot;RW&quot;. When only these connectors on the walls are being used, they are not displayed in the linkage diagram. When other connectors on the walls are being used, instead or as well, the walls are shown. (For example, the left-wall is shown in questions and imperatives.) To make it so that the walls are <em>always</em> shown, type &quot;!walls&quot;.</p><p>Either wall can be deactivated by simply removing the &quot;LEFT-WALL&quot; or &quot;RIGHT-WALL&quot; entry from the dictionary.</p><p>4.8. IDIOMS. A string of words can be defined as a single dictionary entry. To do this, simply join the words together with underbars:</p><pre><code>a_la_mode: A+ or B-;</code></pre><p>Most idioms can be interpreted either as a single &quot;idiom&quot; or as a string of words (for example, &quot;in question&quot;). In this case, the parser will find all linkages with both interpretations.</p><p>In reading idiomatic strings from the dictionary, the parser breaks them up into individual words and assigns them &quot;dummy&quot; link-types which simply link the words of the idiom together in series. These link-types are assigned four-letter names of the form ID[X][Y], where X and Y are arbitrary letters.</p><p>Idioms cannot be given subscripts; if &quot;a_la_mode.a&quot; is included in the dictionary, this will not be accepted. However, an idiom can be listed in the dictionary more than once, without subscripts.</p><ol><li>Conjunctions</li></ol><p>Conjunction refers to the joining together different parts of a sentence using either coordinating conjunctions, correlative conjunctions, or subordinating conjunctions. The most common coordinating conjunctions are and, or, nor, but, and are used to join together two grammatically similar or identical words or phrases. Correlative conjunctions and subordinating conjunctions are set phrases enforcing more complex, long-range structure. Examples include either ... or ..., not only ... but also ..., if ... then ..., and so on. Conjunctions of any of these types are (mostly) handled by the same technique within link grammar, although there is some variation. The technique currently used for handling sentences with conjunctions is described here.</p><p>This mechanism for handling conjunctions was introduced in version 4.7.0 of the parser. Earlier versions of the Link Grammar parser (those prior to version 4.7.0) used a different, special technique for parsing sentences containing conjunctions. This technique, described here, proved to have a number of disadvantages, and is now deprecated and is in the process of being removed. Problems included:</p><pre><code>A relatively non-specific way of conjoining parses, which leads to
+A combinatorial explosion of possible linkages, which results in
+Poor performance when parsing long, complex sentences.</code></pre><p>Worse, the technique was encoded purely algorithmically, in C code, making it (very) hard to modify, expand, or refine. None-the-less, this was done because the original authors believed that there was no other way; that the handling of coordinating conjunctions did not fit &quot;naturally&quot; into the theory of link grammar. The current maintainers believe that this is not at all the case: that coordinating conjunctions can be handled quite well within the context of the main theory. In fact, using ordinary links to handle conjunctions increases specificity and coverage, allowing a broader range of sentences to be parsed correctly, while reducing combinatorial explosion, and providing a tremendous boost to performance (quite often, a factor of ten or more for most well-written, &quot;literate&quot; texts, of the kind that might contain long, complex sentences). The current technique, introduced in version 4.7.0, is described here. By default, the use of the old-style, &quot;fat&quot; linkages is disabled; it can be enabled by specifying the !use-fat=1 flag at the parser prompt, or by calling parse_options_set_use_fat_links(TRUE) from C code.</p><ol><li>Post-Processing</li></ol><p>6.1. THE LOGIC OF POST-PROCESSING. Besides conjunctions, there are certain phenomena in English which the parser is incapable of dealing with in its basic form. To solve these problems, we developed a post-processing system, based on a concept we call &quot;domains&quot;. A domain is a subset of the links that make up a sentence. After a linkage has been found, the post-processing mechanism goes through the linkage and divides the sentence up into domains based on the kind of links that are present in the sentence. It then further divides the links into &quot;groups&quot;: sets of links which share a particular domain membership. It then applies rules which may declare the linkage invalid based on the combinations of links present in a given group.</p><p>The information about the the domains to be formed and the rules to be applied must be included in a &quot;post-process knowledge file&quot;. The file we provide with version 4.0 is called &quot;4.0.knowledge&quot;. This is the default post-process file, and will be used if no other file is specified. As explained earlier, a post-process file can be specified on the command line as follows: parse [dictionary] -pp [post-process file] If you type &quot;-ppoff&quot; rather than &quot;-pp [post-process file]&quot;, then no post-process file will be used and no post-processing will be done.</p><p>6.2. THE DOMAIN STRUCTURE. A domain is started by a certain type of link; we call this the &quot;root link&quot; of the domain. The word on the left end of this link is the &quot;root word&quot;. Different types of links start different types of domains. To understand how domains are formed, imagine a linkage as a kind of street map, through which paths can be traced. In most cases, the domain of a link consists of all the links in the sentence that can be reached from that link, without tracing through the root word. (Another way of saying this is: the domain contains everything reachable from the right end of the root link, without tracing through the root link itself.) For example, assume that the C link in the following sentence begins a domain. This domain will include the Sp link and the I, but not the Ss and the O.</p><pre><code>         +--C---+
+     +-Ss+O-+   +Sp(e)+I(e)+
+     |   |  |   |     |    |
+He told me they would  go</code></pre><p>(The letters in parentheses indicate that the Sp and I link are in an e-type domain.) Very roughly speaking, domains tend to include the links to the right of that link. However, there are many exceptions. In the following sentence, the C link starts a domain; this includes the Ss and O links, but not the Xc, CO, or Sp, even though the Sp is entirely to the right of the C.</p><pre><code>      +---------CO---------+
+      +-------Xc--------+  |
+      +-C-+Ss(s)+O(s)+  |  +Sp+
+      |   |     |    |  |  |  |
+After he   saw  us  ,  we left</code></pre><p>In the case below, the domain started by the C link actually extends back to the left of the root link, to contain the B link as well. This follows naturally from the way domains are defined. The B link can be reached from the right end of the C link, without tracing left through the C. In this case, note that the B link extends to the left of the root word.</p><pre><code>     +---------Bsw(e)------+
+     |   +---I---+         |
+     |   +SI+    +-C--+S(e)+
+     |   |  |    |    |    |
+Who do you think you  saw</code></pre><p>If one wants a certain link type to start a domain, it must be included in the list &quot;DOMAIN_STARTER_LINKS&quot; in the file &quot;post-process.knowledge&quot;. It must also be included in the following list, (&quot;STARTING_LINK_TYPE_TABLE&quot;), along with the name of the domain-type that it starts.</p><p>As we saw above, it is possible for domains to be traced back to the left of the root word; and from there, they might be extended indefinitely. This tends to be prevented, however, by what we call &quot;restricted links&quot;. If a link is restricted, this means that if a domain is being traced through it to the left, and if the link extends to the left of the root word of the domain (the left end of the root link), the domain will be traced no further through the restricted link. So, for example, Bsw is a restricted link. This means that, in the sentence above, the &quot;e&quot; domain started by the C will contain the Bsw; but if there are any links which can be traced from the left end of the Bsw (i.e., another link coming out of the word &quot;who&quot;), they will not be included in the domain.</p><p>There are a few other complications in the way domains are generated.</p><ol><li><p>The root link of a domain may or may not be included in the domain it starts. Root links will not be included, unless they are listed in a special list in post-process.c, &quot;DOMAIN_CONTAINS_LINKS&quot;.</p></li><li><p>Some domain-types are &quot;bounded domains&quot;. This means that they are not allowed to extend to the left of their root link at all (even with a &quot;restricted link&quot;). If they do extend in this way in a linkage, the linkage will be declared invalid. (See &quot;C&quot; in the Guide to Links for an explanation of how this is used.) Domain types in this category must be listed under &quot;BOUNDED_RULES&quot;.</p></li><li><p>As well as ordinary domains, there are two special kinds. One kind is &quot;urfl&quot; domains. As well as including everything that can be reached from the right end of the root link, these domains include everything that can be reached from the left end of the root link, tracing to the right, underneath the root link (but not over it), hence the name -- &quot;Under Root From Left&quot;. In the example below, the TOo link starts an &quot;urfl&quot; domain; as well as including the &quot;I&quot; link, as a normal domain would, this domain also includes the O.</p><pre><code>   +---TOo--+</code></pre><p>+-S-+O(x)+   +I(x)+
+|   |    |   |    |
+I asked him to   go</p></li></ol><p>The final kind of domain is &quot;urfl-only&quot;. These include ONLY links that can be reached from the left of the root link, tracing to the right underneath the root link. In the case below, the Ss*g link starts an &quot;urfl-only&quot; domain.</p><pre><code>     +-----Ss*g------+
+     +---O(d)---+    |
+     +     +D(d)+    +-O+
+     |     |    |    |  |
+  playing the piano is fun</code></pre><p>&quot;Urfl&quot; and &quot;urfl-only&quot; domains are defined by the link-types that start them. Any link that is added to the &quot;URFL_DOMAIN_STARTER_LNKS&quot; list will start an &quot;urfl&quot; domain; any link that is added to the &quot;URFL_ONLY_DOMAIN_STARTER_LINKS&quot; will start an &quot;urfl-only&quot; domain.</p><ol><li>Finally, certain link types are simply ignored by post-processing. No domains may be traced through them, nor can they start domains. These are listed under &quot;IGNORE_THESE_LINKS&quot;.</li></ol><p>Domains may be nested; a link may therefore be in several domains at once. The domain membership of a given link can be shown in the following way:</p><p>+----------------------RW-------------------+
++--W-+-S+-P-+-MV-+-C+-S-+-C+-S+--P--+       |
+|    |  |   |    |  |   |  |  |     |       |
+///// he got mad when I said I was leaving  \\\</p><pre><code>           /////          RW      &lt;---RW----&gt;  RW        RIGHT-WALL</code></pre><p>(m)           /////          Wd      &lt;---Wd----&gt;  Wd        he
+(m)           he             Ss      &lt;---Ss----&gt;  S         got
+(m)           got            Pa      &lt;---Pa----&gt;  Pa        mad
+(m)           mad            MV      &lt;---MVs---&gt;  MVs       when
+(m)           when           Cs      &lt;---Cs----&gt;  C         I
+(m) (s)       I              Sp<em>i    &lt;---Sp</em>i--&gt;  S         said
+(m) (s)       said           Ce      &lt;---Ce----&gt;  C         I
+(m) (s) (e)   I              Sp<em>i    &lt;---Spii--&gt;  S</em>i       was
+(m) (s) (e)   was            Pg      &lt;---Pg----&gt;  Pg        leaving</p><p>To have the parser produce a &quot;link list&quot; of this kind, type &quot;!links&quot;. (In the structure shown here, the domain structure is strictly hierarchical; every domain that is partially inside another is completely inside that domain. There is no a priori reason why domain structure should always be strictly hierarchical; but we believe that, given the current grammar, it will almost always be strictly hierarchical, except in a few very obscure cases.)</p><p>6.3. GROUPS. The domain structure is really a means to creating a more useful kind of structure. This is the &quot;group&quot;. A &quot;group&quot; of links is the set of links that have the same domain membership. In the above example, then, the &quot;Spii&quot; and &quot;Pg&quot; are part of the same group. The &quot;Ce&quot; and &quot;Sp*i&quot; are in another group. The Ce and Pg are not in the same group. Groups correspond roughly to subject-verb expressions - groups of links that are part of a clause, but not part of any dependent clauses within that clause. For example, in the above case, &quot;He got mad&quot; is one subject-verb expression; &quot;I said ...&quot; is another, &quot;I was leaving&quot; is a third.</p><p>6.4. POST-PROCESSING RULES. The domain structure thus divides a sentence into groups of links. This then allows us to enforce constraints on the link-types that are in a subject-verb expression. This is useful in cases where there are constraints on the combinations of links that can be present in a clause, but the links may be separated (i.e., they may not all connect to the same word), making the constraints difficult to enforce using link logic. We do this by using certain kinds of rules. One is the &quot;contains_one&quot; rule. This says that if a group contains a link of a certain type, it must contain a link of another type. Another kind of rule is the &quot;contains_none&quot; rule. This says that if a group contains one kind of link, it may not contain any of a certain kind of link.</p><p>In each case, we have a &quot;triggering&quot; link-type: a link that triggers the rule, and enforces a certain constraint. We also have a &quot;criterion&quot; link-type: a link that defines the constraint (whether it is &quot;must contain X&quot; or &quot;may not contain X&quot;). The triggering link for a rule must be contained in a line of the form</p><pre><code>    X, Y Z, &quot;Warning!&quot;,</code></pre><p>where &quot;X&quot; is the triggering link-type, &quot;Y&quot; and &quot;Z&quot; are the criterion links for the rule, and &quot;Warning&quot; is a message that will be outputted when the rule is violated. (This warning will only be outputted when the incorrect linkage itself is outputted, and this only happens in &quot;!bad&quot; mode. It will also only be outputted when the &quot;!links&quot; display is shown.)</p><p>If such a rule is listed under &quot;CONTAINS_ONE_RULES&quot;, this means, &quot;A group containing an X connector must contain either a Y or a Z&quot;. (The group may contain more than one from the set: a Y and a Z, 2 Y&apos;s, etc.) If it is listed under &quot;CONTAINS_NONE_RULES&quot;, this means &quot;a group containing an X link may not contain either a Y or a Z&quot;.</p><p>One can also define a symbol as a set of links:</p><pre><code>    @Blah: Y Z</code></pre><p>In this line, &quot;@Blah&quot; is defined as the set of links {X, Y}. &quot;@Blah&quot; can then be used in actual rules. Given this definition, the rule below will have the same effect as the rule stated above:</p><pre><code>    X, Blah, &quot;Warning&quot;,</code></pre><p>where &quot;Y&quot; and &quot;Z&quot; are the criterion links for the rule.</p><p>A further kind of rule is used in post-processing, which does not relate to domain structure. If a certain link type is included in the list &quot;MUST_FORM_A_CYCLE&quot;, this means that any links of that type may only be used in cycles. For example, &quot;R&quot; is on list. The linkage below satisfies this rule in the case of &quot;R&quot;, because &quot;R&quot; is used in a cycle here.</p><pre><code>        +-------Ss------+</code></pre><p>+----Wd---+----Bs---+     |
+|    +-Ds-+--R-+Sp*i+     +-Pp-+
+|    |    |    |    |     |    |
+///// the man.n I.p saw.v is.v here</p><p>Certain link-types (relating to punctuation) proved to disrupt the domain structure; it seemed preferable for them to simply be ignored by post-processing. Thus we created a list in post-process.knowledge, &quot;IGNORE_THESE_LINKS&quot;, which are ignored for in the creation of the domain structure (that is, domains are not traced through them), and also in the application of the post-processing rules. (They may be included in the &quot;MUST_FORM_A_CYCLE&quot; list, however, if desired.)</p><p>6.5. POST-PROCESSING AND CONJUNCTIONS. The interaction of post-processing and conjunctions is straightforward. As discussed earlier, any linkage with a conjunction can be regarded as several sub-linkages, and in fact is generally displayed that way. In post-processing, these sub-linkages are treated individually; domains are generated and rules are applied in each sub-linkage. A conjunctive linkage is only approved by post-processing if all of its sub-linkages are approved.</p><p>6.6. LINK-TYPE MATCHING IN POST-PROCESSING. Link-type matching in post-processing requires some explanation. In the dictionary, subscripts are used to create sub-categories of connector-types. &quot;Ss+&quot; will link with &quot;Ss-&quot; and &quot;S-&quot;, but not &quot;Sp-&quot;. The character &quot;<em>&quot; is used as a wild-card; it will match to any character. An unsubscripted connector name, like &quot;S+&quot;, can thus be regarded as equivalent to &quot;S</em>**...+&quot;</p><p>The post-processor also requires a system for matching connector types. While the linkage stage is looking at link-types on connector expressions, post-processing is looking at the resulting link-types that are formed when a linkage is complete. (If an &quot;Ss+&quot; has linked together with a &quot;S<em>a-&quot;, what the post-processor sees is &quot;Ssa&quot;.) It is then comparing them to link-names listed in &quot;post-process.c&quot; (as domain-starting links, as triggering links for rules, as criterion links for rules, etc.). The link-type matching system used in post-processing is similar to the linkage-level one, but it is a little different. As mentioned above, from the dictionary&apos;s point of &quot;</em>&quot; is a wild-card character that matches to any other character (see section 3.1). From the post-processor&apos;s point of view, however, &quot;<em>&quot; is just another character; &quot;S</em>&quot; in a linkage does <em>not</em> match with an &quot;Ss&quot; in post-process.knowledge. Nor does an &quot;S*&quot; in post-process.knowledge match with an &quot;Ss&quot; in a linkage. However, there is also a wild-card character in post-processing; this is &quot;#&quot;. An &quot;S#&quot; in post-process.knowledge does match with a &quot;Ss&quot; in the dictionary, as well as with an &quot;S*&quot;.</p><p>As mentioned above, at the linkage stage, the parser treats any unsubscripted places in a link name as &quot;<em>&quot;&apos;s. For the post-processor, however, any empty subscript places in a link name - either in a linkage or in a post-processing rule - are treated as &quot;#&apos;s&quot;. In short: at both the linkage stage and the post-processing stage, empty subscript places are treated as wild-cards that match to anything. For explicitly labeling a subscript place as a wild-card, however, one uses &quot;</em>&quot; at the linkage-stage and &quot;#&quot; in post-processing.</p><p>The specific uses of post-processing are fully explained in the &quot;Guide to Links&quot;. For example, see &quot;SF: filler-it&quot;; &quot;SI&quot;, and &quot;MV: Comparatives&quot;.</p><p>6.7. THE &quot;!BAD&quot; COMMAND. For people editing the dictionary or post-processing, a useful display feature is &quot;!bad&quot;. The usual running of the parser is that it will display the linkages in order of cost (lowest-cost ones first); additional linkages after the first one can be seen one at a time by typing RETURN. Only linkages passing post-processing are outputted. If the &quot;!bad&quot; variable is toggled, however, the parser will output <em>all</em> of the linkages it finds, including those that fail post-processing. The invalid linkages will be outputted after the valid ones, one by one, as long as the user types RETURN. The parser will only output the linkages it finds at whatever stage it had gotten to when it found a valid linkage. For example, if it had gotten to null-link stage 2 before finding its first valid linkage, it will also output invalid linkages found at null-link stage 2 (see section 7.1 for explanation of null-links). There is no way of seeing invalid linkages found at earlier stages.</p><ol><li>Speed and Robustness Features</li></ol><p>The original version of the parser, as described in previous sections, did an exhaustive search for all correct linkages; if none were found, it produced nothing. However, this meant that the parser was not &quot;robust&quot;: it could not do anything useful with a sentence unless it could parse the entire thing. It was also quite slow. We have developed several remedies to these problems.</p><p>7.1. THE NULL-LINK SYSTEM. An important feature of the parser is the &quot;null-link&quot; system. This effectively allows robust parsing: that is, it allows the parser to assign some structure to a sentence even when it cannot fully interpret it. Basically, if the parser cannot parse a sentence normally (that is, if it cannot find any valid linkages), it tries ignoring one word in the sentence. It finds all the linkages it can, ignoring just one word (some linkages may ignore one word, some may ignore another). This is &quot;null link stage 1&quot;. Failing that, it then attempts to find linkages ignoring 2 words. This is &quot;null link stage 2&quot;. Failing that, it will continue to increment the number of null links, until it finds some valid linkages; it will then output all the linkages found at this stage, and stop. There may be some cases where it cannot find a valid linkage unless it ignores <em>all</em> the words in the sentence; in this case, it simply gets to &quot;null link stage N&quot; (where N is the number of words in the sentence), and then gives up.</p><p>In the graphic display, &quot;null-linked&quot; words are shown in brackets, with no links attached to them. In the sentence below, &quot;gosh&quot; and &quot;,&quot; are null-linked:</p><pre><code>         +--Dsu--+---Ss---+----O---+
+         |       |        |        |</code></pre><p>[gosh] [,] this sentence.n uses.v null-links</p><p>In null-link parsing, the connectivity requirement is suspended (see Section 1.3). This means that disconnected &quot;islands&quot; may form. However, each island represents one added null link. That is, if a sentence can be parsed as three disconnected islands (but with all the words otherwise connected with regular links), this will linkage will be found at null link stage 2.</p><p>Note that the null-link systems respects post-processing. It keeps incrementing the number of null-links until it finds linkages that pass post-processing. For example, if linkages are found at null-link stage 0, but they all fail post-processing, the parser will decide that no valid linkage has been found and will proceed to null-link stage 1. However, if some of the links in a linkage are not indirectly connected to the left-wall--as may occur in some &quot;islands&quot;--they may not be contained in any post-processing domain. Such links will not be subject to &quot;contains_one&quot; and &quot;contains_none&quot; rules, which apply only to links that are in a domain.</p><p>The null-link system can be turned on or off by typing the command &quot;!null&quot;. The default is that null-links are on. If null-links are turned off, then, when the parser is unable to find a complete linkage for a sentence, it will say &quot;No complete linkages found&quot;, and prompt for the next sentence.</p><p>7.2. THE LINK-LENGTH LIMIT. In studying the parser&apos;s performance on very long sentences (on which it was often very slow), we discovered that it was often considering extremely long links even for link-types which are generally very short, such as &quot;D&quot; (connecting determiners to nouns). For this reason, we installed a &quot;link-length-limit&quot;: links are only allowed to be a certain length, in terms of the number of words from end to end. However, not all link-types are always short; some are sometimes quite long, such as &quot;S&quot; and &quot;MV&quot;. Thus we include a list in the dictionary, &quot;UNLIMITED-CONNECTORS&quot;, for link-types which are to be exempted from this limit. The limit for short link-types can be adjusted while running the parser using the command &quot;!short=[length]&quot;. The default value for this is 6.</p><p>If you wish to disable the length limit, so that all link-types may be any length, remove the &quot;UNLIMITED-CONNECTORS&quot; list from the dictionary. If you want all link-types to be <em>short</em>, so that none are exempted from the length limit, you must include the &quot;UNLIMITED-CONNECTORS&quot; list in the dictionary, with some bogus connector such as &quot;NO+&quot;, but otherwise empty.</p><p>The interaction between the length limit and conjunctions is complex. In sentences containing a conjunction, it seemed sensible to relax the length limit. For example, D links are very rarely 7 words long (as in sentence 1 below), but they might be this long in a sentence containing a conjunction (sentence 2).</p><p>+-------------D-------------+
+|                           |
+The big big big big big big dog ran (rejected)</p><p>The big big dog and big big cat ran (accepted)</p><p>The logical thing to do seemed to be to apply the length limit only to sub-sentences; that is, when the length of a link to one element in an &quot;and&quot;-list is calculated, the length of any intervening elements in the &quot;and&quot;-list is subtracted. We call this adjusted length the &quot;effective length&quot; of a link. Therefore sentence 1 above is rejected; sentence 2 is accepted. In null-link stages, however, this is not done; link length is simply equal to actual length. (For complex reasons, linkages with conjunctions which exceed the length limit may occasionally be accepted in null-link stages.)</p><p>7.3. THE POST-PROCESSING LIMIT. Since post-processing proved to be a major source of the slowness of the parser, we installed a &quot;post-processing limit&quot;. This is simply a limit on the number of linkages that will be considered by post-processing. If the limit is set at 100 (this is the default), then only 100 linkages will be considered by post-processing, even if many more than that are generated; the others will just be discarded. This means, of course, that the &quot;best&quot; linkage (by the parser&apos;s heuristics, for example) may be discarded. However, the linkages to be considered by post-processing are selected randomly from all the generated ones, which means that at least one linkage is likely to be found which is fairly similar to the correct one. The number of sentences considered by post-processing can be controlled with the variable &quot;!limit=[number]&quot;.</p><p>7.4. THE TIMER. The parser also has a timer. When the timer is set to a positive value, the parser will simply abort parsing of a sentence after that number of seconds has elapsed. (When the time is set to -1 -- its default -- it does nothing, and the parser will run indefinitely.) Set the timer while running the parser by typing &quot;!timeout = [time value in seconds]&quot;.</p><p>7.5. PANIC MODE. Combining several of these features, we created a new mode of parsing called &quot;panic mode&quot;, in which the parser can parse even very long sentences quickly, but with considerably reduced accuracy. Panic mode has the following features. 1) All link-types are considered &quot;short&quot;, even those included in the UNLIMITED-CONNECTORS list. 2) Panic mode begins immediately with null-link parsing, skipping regular parsing (the main consequence of this is that the &quot;effective length&quot; of links is considered to be their actual length; see Section 7.3). 3) Whereas only connectors of cost 0, 1 or 2 are considered in regular parsing, all connectors are considered in panic mode. At the moment, the only connectors in the dictionary with cost greater than 2 (they have cost 3) are connectors on nouns which allow them to make no main connection at all:</p><p>dog man house: {@A-} &amp; D- &amp; (S+ or O- or J- or [[[()]]]);</p><p>In effect, this allows noun-phrases to be treated as complete entities, not connected to anything else. (Recall that in null-link parsing, the connectivity rule is suspended, so that disconnected &quot;islands&quot; may form.) In a typical &quot;panic mode&quot; linkage, then, various noun-phrases and clauses within the sentence will be fully parsed, but they will often not be connected to each other.</p><p>Panic mode is invoked whenever the timer runs out on regular parsing and no valid linkages have been found. For example, if the timer is set for 15 seconds, panic mode will begin after 15 seconds. Panic mode can be disabled (or turned back on again), while running the parser, by typing &quot;!panic&quot;.</p></div></div></div></body></html>

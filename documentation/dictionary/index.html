@@ -1,0 +1,179 @@
+<html><head><meta charset="utf-8" /><title>Link Grammar</title><link rel="stylesheet" href="/static/normalize.css" /><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Muli|Ovo" /><link rel="stylesheet" href="/static/main.css" /></head><body><div id="overlay"></div><div id="container"><div id="main"><div id="header"><h1><a href="/">Link Grammar</a></h1></div><ul id="navigation"><li><a href="/documentation.html">Documentation</a></li><li><a href="/changelog.html">ChangeLog</a></li><li><a href="http://www.abisource.com/downloads/link-grammar/">Download</a></li><li><a href="https://github.com/opencog/link-grammar">Forge</a></li><li><a href="http://groups.google.com/group/link-grammar?hl=en">Help</a></li></ul><div id="content"><h2>Link Grammar&apos;s Dictionary</h2><h3>The Basic Idea</h3><p>Think of words as blocks with <em>connectors</em> coming out. There are
+different types of connectors; connectors may also point to the right
+or to the left. A left-pointing connector connects with a
+right-pointing connector of the same type on another word. The two
+connectors together form a <em>link</em>. A valid sentence is one in which
+all the words present are used in a way which is valid according to
+their rules (and which also satisfies certain global rules).</p><h3>Introduction</h3><p>There is a description of the logic of link grammars, the notation of
+the dictionary, and the features of version 4.0 of the parser in the
+<a href="introduction.html">introduction</a>.</p><h3>English Guide-to-Links</h3><p>A AA AF AJ AL AM AN AZ B BI BT BW C CC CO CP CQ CV CX D DD DG DP DT E
+EA EB EC EE EF EI EL EN EQ ER EW EZ FL FM G GN H HA I ID IN IV J JG JQ
+JT K L LE LI M MF MG MJ MV MX N NA ND NF NI NJ NM NN NO NR NS NT NW O
+OD OF ON OT OX P PF PH PP Q QI QJ QU R RJ RS RW S SF SFI SI SJ SX SXI
+TA TD TH TI TM TO TQ TR TS TT TW TY TZ U UN V VC VJ W WN WR WV X XJ Y
+YP YS Z ZZZ</p><p>This is an index to all link-types in the English dictionary. It
+explains the grammatical usages of each link, and the way links are
+combined to form complex constructions. It also explains all the uses
+of post-processing: the kinds of links that start domains, the kinds
+of domains they start, and the various kinds of post-processing
+rules. The Guide-To-Links is designed for people who wish to
+understand the syntactic aspect of the parser, or wish to edit the
+dictionary or write their own dictionaries and already read the
+<a href="introduction.html">introduction</a>.</p><p>Only actual link-types are listed alphabetically, but <strong>not
+subscripts</strong>. However, each link subscript is explained in the entry
+for the link-type. That is, each subscript character is explained. To
+understand the usage of a link-type with more than one subscript, look
+up the subscript-types separately. For example, for <code>SIsj</code>, look up
+<code>SIs</code>, then <code>SI*j</code>. (The <code>*</code> character is the wild-card character used
+in post-processing; in this context it is also a wild-card, meaning
+&quot;the subscript in this position is not important for the moment&quot;.)</p><ul><li>A connects pre-noun (&quot;attributive&quot;) adjectives to following nouns:
+&quot;The BIG DOG chased me&quot;, &quot;The BIG BLACK UGLY DOG chased me&quot;.</li><li>AA is used in the construction &quot;How [adj] a [noun] was it?&quot;. It
+connects the adjective to the following &quot;a&quot;.</li><li>AF connects adjectives to verbs in cases where the adjective is fronted, such as questions and indirect questions: &quot;How BIG IS it?&quot;</li><li>AJ connects adjectives to conjunctions to form a modifier phrase:
+&quot;The BLACK AND WHITE cat sleeps.&quot;</li><li>AL connects a few determiners like &quot;all&quot; or &quot;both&quot; to following
+determiners: &quot;ALL THE people are here&quot;.</li><li>AM connects &quot;as&quot; to &quot;much&quot; or &quot;many&quot;: &quot;I don&apos;t go out AS MUCH now&quot;.</li><li>AN connects noun-modifiers to following nouns: &quot;The TAX PROPOSAL was
+rejected&quot;.</li><li>AZ connects the word &quot;as&quot; back to certain verbs that can take &quot;[obj]
+as [adj]&quot; as a complement: &quot;He VIEWED him AS stupid&quot;.</li><li>B serves various functions involving relative clauses and
+questions. It connects transitive verbs back to their objects in
+relative clauses, questions, and indirect questions (&quot;The DOG we
+CHASED&quot;, &quot;WHO did you SEE?&quot;); it also connects the main noun to the
+finite verb in subject-type relative clauses (&quot;The DOG who CHASED me
+was black&quot;).</li><li>BI connects forms of the verb &quot;be&quot; to certain idiomatic expressions:
+for example, cases like &quot;He IS PRESIDENT of the company&quot;.</li><li>BT is used with time expressions acting as fronted objects: &quot;How
+many YEARS did it LAST?&quot;.</li><li>BW connects &quot;what&quot; to various verbs like &quot;think&quot;, which are not
+really transitive but can connect back to &quot;what&quot; in questions: &quot;WHAT
+do you THINK?&quot;</li><li>C links conjunctions to subjects of subordinate clauses (&quot;He left
+WHEN HE saw me&quot;). it also links certain verbs to subjects of
+embedded clauses (&quot;He SAID HE was sorry&quot;).</li><li>CO connects &quot;openers&quot; to subjects of clauses: &quot;APPARENTLY / ON
+Tuesday , THEY went to a movie&quot;.</li><li>CP connects paraphrasing or quoting verbs to the wall (and,
+indirectly, to the paraphrased expression): &quot;///// That is untrue,
+the spokesman SAID.&quot;</li><li>CQ connects to auxiliaries in comparative constructions involving
+s-v inversion: &quot;SHE has more money THAN DOES Joe&quot;.</li><li>CV connects the verbs of subordinate clauses to the subordinating
+word.</li><li>CX is used in comparative constructions where the right half of the
+comparative contains only an auxiliary: &quot;She has more money THAN he
+DOES&quot;.</li><li>D connects determiners to nouns: &quot;THE DOG chased A CAT and SOME
+BIRDS&quot;.</li><li>DD connects definite determiners (&quot;the&quot;, &quot;his&quot;) to certain things
+like number expressions and adjectives acting as nouns: &quot;THE POOR&quot;,
+&quot;THE TWO he mentioned&quot;.</li><li>DG connects the word &quot;The&quot; with proper nouns: &quot;the Riviera&quot;, &quot;the
+Mississippi&quot;.</li><li>DP connects possessive determiners to gerunds: &quot;YOUR TELLING John to
+leave was stupid&quot;.</li><li>DT connects determiners to nouns in idiomatic time expressions:
+&quot;NEXT WEEK&quot;, &quot;NEXT THURSDAY&quot;.</li><li>E is used for verb-modifying adverbs which precede the verb: &quot;He is
+APPARENTLY LEAVING&quot;.</li><li>EA connects adverbs to adjectives: &quot;She is a VERY GOOD player&quot;.</li><li>EB connects adverbs to forms of &quot;be&quot; before an object or
+prepositional phrase: &quot;He IS APPARENTLY a good programmer&quot;.</li><li>EC connects adverbs to comparative adjectives: &quot;It is MUCH BIGGER&quot;</li><li>EE connects adverbs to other adverbs: &quot;He ran VERY QUICKLY&quot;.</li><li>EF connects the word &quot;enough&quot; to preceding adjectives and adverbs:
+&quot;He didn&apos;t run QUICKLY ENOUGH&quot;.</li><li>EI connects a few adverbs to &quot;after&quot; and &quot;before&quot;: &quot;I left SOON
+AFTER I saw you&quot;.</li><li>EL connects certain words to the word &quot;else&quot;: something / everything
+/ anything / nothing , somewhere (etc.), and someone (etc.).</li><li>EN connects certain adverbs to expressions of quantity: &quot;The class
+has NEARLY FIFTY students&quot;.</li><li>EQ connects parts of an equation together: &quot;Phosphorylation was
+observed (P = 0.06)&quot;.</li><li>ER is used the expression &quot;The x-er..., the y-er...&quot;. it connects
+the two halfs of the expression together, via the comparative words
+(e.g. &quot;The FASTER it is, the MORE they will like it&quot;).</li><li>EZ connects certain adverbs to the word &quot;as&quot;, like &quot;just&quot; and
+&quot;almost&quot;: &quot;You&apos;re JUST AS good as he is.&quot;</li><li>FL connects &quot;for&quot; to &quot;long&quot;: &quot;I didn&apos;t wait FOR LONG&quot;.</li><li>FM connects the preposition &quot;from&quot; to various other prepositions:
+&quot;We heard a scream FROM INSIDE the house&quot;.</li><li>G connects proper noun words together in series: &quot;GEORGE HERBERT
+WALKER BUSH is here.&quot;</li><li>GN (stage 2 only) connects a proper noun to a preceding common noun
+which introduces it: &quot;The ACTOR Eddie MURPHY attended the event&quot;.</li><li>H connects &quot;how&quot; to &quot;much&quot; or &quot;many&quot;: &quot;HOW MUCH money do you have&quot;.</li><li>HA connects &quot;how&quot; to &quot;a&quot;: &quot;HOW big A dog was it?&quot;</li><li>I connects infinitive verb forms to certain words such as modal
+verbs and &quot;to&quot;: &quot;You MUST DO it&quot;, &quot;I want TO DO it&quot;.</li><li>ID is a special class of link-types generated by the parser, with
+arbitrary four-letter names (such as &quot;IDBT&quot;), to connect together
+words of idiomatic expressions such as &quot;at_hand&quot; and
+&quot;head_of_state&quot;.</li><li>IN connects the preposition &quot;in&quot; to certain time expressions: &quot;We
+did it IN DECEMBER&quot;.</li><li>IV connects the infinitive verb to the clause that starts the
+infinitive.</li><li>J connects prepositions to their objects: &quot;The man WITH the HAT is
+here&quot;.</li><li>JG connects certain prepositions to proper-noun objects: &quot;The Emir
+OF KUWAIT is here&quot;.</li><li>JQ connects prepositions to question-word determiners in
+&quot;prepositional questions&quot;: &quot;IN WHICH room were you sleeping?&quot;</li><li>JT connects certain conjunctions to time-expressions like &quot;last
+week&quot;: &quot;UNTIL last WEEK, I thought she liked me&quot;.</li><li>K connects certain verbs with particles like &quot;in&quot;, &quot;out&quot;, &quot;up&quot; and
+the like: &quot;He STOOD UP and WALKED OUT&quot;.</li><li>L connects certain determiners to superlative adjectives: &quot;He has
+THE BIGGEST room&quot;.</li><li>LE is used in comparative constructions to connect an adjective to
+the second half of the comparative expression beyond a complement
+phrase: &quot;It is more LIKELY that Joe will go THAN that Fred will go&quot;.</li><li>LI connects certain verbs to the preposition &quot;like&quot;: &quot;I FEEL LIKE a
+fool.&quot;</li><li>M connects nouns to various kinds of post-noun modifiers:
+prepositional phrases (&quot;The MAN WITH the hat&quot;), participle modifiers
+(&quot;The WOMAN CARRYING the box&quot;), prepositional relatives (&quot;The MAN TO
+whom I was speaking&quot;), and other kinds.</li><li>MF is used in the expression &quot;Many people were injured, SOME OF THEM
+children&quot;.</li><li>MG allows certain prepositions to modify proper nouns: &quot;The EMIR OF
+Kuwait is here&quot;.</li><li>MJ connects prepositions and other post-nominal modifiers to
+conjunctions to form a prepositional or modifier phrase: &quot;It is
+hidden somewhere IN OR NEAR the house.&quot;</li><li>MV connects verbs and adjectives to modifying phrases that follow,
+like adverbs (&quot;The dog RAN QUICKLY&quot;), prepositional phrases (&quot;The
+dog RAN IN the yard&quot;), subordinating conjunctions (&quot;He LEFT WHEN he
+saw me&quot;), comparatives, participle phrases with commas, and other
+things.</li><li>MX connects modifying phrases with commas to preceding nouns: &quot;The
+DOG, a POODLE, was black&quot;. &quot;JOHN, IN a black suit, looked great&quot;.</li><li>N connects the word &quot;not&quot; to preceding auxiliaries: &quot;He DID NOT go&quot;.</li><li>NA connects numbers used in spelled-out dates: &quot;The war started in
+NINETEEN FOURTEEN&quot;.</li><li>ND connects numbers with expressions that require numerical
+determiners: &quot;I saw him THREE WEEKS ago&quot;.</li><li>NF is used with NJ in idiomatic number expressions involving &quot;of&quot;:
+&quot;He lives two THIRDS OF a mile from here&quot;.</li><li>NI is used in a few special idiomatic number phrases: &quot;I have
+BETWEEN 5 AND 20 dogs&quot;.</li><li>NJ is used with NF in idiomatic number expressions involving &quot;of&quot;:
+&quot;He lives two thirds OF a MILE from here&quot;.</li><li>NM connects certain idiomatic numerical modifiers: &quot;He is on FLIGHT
+714&quot;, &quot;That will cost $300&quot;.</li><li>NN connects number words together in series: &quot;FOUR HUNDRED THOUSAND
+people live here&quot;.</li><li>NO is used on words which have no normal linkage requirement, but
+need to be included in the dictionary, such as &quot;um&quot; and &quot;ah&quot;.</li><li>NR connects fraction words with superlatives: &quot;It is the THIRD
+BIGGEST city in China&quot;.</li><li>NS connects singular numbers (one, 1, a) to idiomatic expressions
+requiring number determiners: &quot;I saw him ONE WEEK ago&quot;.</li><li>NT connects &quot;not&quot; to &quot;to&quot;: &quot;I told you NOT TO come&quot;.</li><li>NW is used in idiomatic fraction expressions: &quot;TWO THIRDS of the
+students were women&quot;.</li><li>O connects transitive verbs to their objects, direct or indirect:
+&quot;She SAW ME&quot;, &quot;I GAVE HIM the BOOK&quot;.</li><li>OD is used for verbs like &quot;rise&quot; and &quot;fall&quot; which can take
+expressions of distance as complements: &quot;It FELL five FEET&quot;.</li><li>OF connects certain verbs and adjectives to the word &quot;of&quot;: &quot;She
+ACCUSED him OF the crime&quot;, &quot;I&apos;m PROUD OF you&quot;.</li><li>ON connectors the word &quot;on&quot; to dates or days of the week in time
+expressions: &quot;We saw her again ON TUESDAY&quot;.</li><li>OT is used for verbs like &quot;last&quot; which can take time expressions as
+objects: &quot;It LASTED five HOURS&quot;.</li><li>OX is an object connector, analogous to SF, used for special
+&quot;filler&quot; words like &quot;it&quot; and &quot;there&quot; when used as objects: &quot;That
+MAKES IT unlikely that she will come&quot;.</li><li>P connects forms of the verb &quot;be&quot; to various words that can be its
+complements: prepositions, adjectives, and passive and progressive
+participles: &quot;He WAS [ ANGRY / IN the yard / CHOSEN / RUNNING ]&quot;.</li><li>PF is used for subject-verb inversion: &quot;UNDER the tree SLEPT Jim.&quot;
+i.e. for preposition-fronted sentences.</li><li>PH is used to enforce phonetic agreement in the usage of &quot;a&quot; and
+&quot;an&quot; with words that begin with consonants and vowels. So: &quot;I ate AN
+apple.&quot; &quot;I ate A green apple.&quot;</li><li>PP connects forms of &quot;have&quot; with past participles: &quot;He HAS GONE&quot;.</li><li>Q is used in questions. It connects the wall to the auxiliary in
+simple yes-no questions (&quot;///// DID you go?&quot;); it connects the
+question word to the auxiliary in where-when-how questions (&quot;WHERE
+DID you go&quot;).</li><li>QI connects certain verbs and adjectives to question-words, forming
+indirect questions: &quot;He WONDERED WHAT she would say&quot;.</li><li>QJ connects question words to conjunctions to form a question
+phrase: &quot;WHEN AND WHERE is the party?&quot;</li><li>QU connects quotation marks to quoted sentences.</li><li>R connects nouns to relative clauses. In subject-type relatives, it
+connects to the relative pronoun (&quot;The DOG WHO chased me was
+black&quot;); in object-type relatives, it connects either to the
+relative pronoun or to the subject of the relative clause (&quot;The DOG
+THAT we chased was black&quot;, &quot;The DOG WE chased was black&quot;).</li><li>RJ provides support for conjoining adverbs and other miscellaneous
+phrases: &quot;She handled it QUICKLY AND GRACEFULLY&quot;</li><li>RS is used in subject-type relative clauses to connect the relative
+pronoun to the verb: &quot;The dog WHO CHASED me was black&quot;.</li><li>RW connects the right-wall to the left-wall in cases where the
+right-wall is not needed for punctuation purposes.</li><li>S connects subject nouns to finite verbs: &quot;The DOG CHASED the cat&quot;:
+&quot;The DOG [ IS chasing / HAS chased / WILL chase ] the cat&quot;.</li><li>SF is a special connector used to connect &quot;filler&quot; subjects like
+&quot;it&quot; and &quot;there&quot; to finite verbs: &quot;THERE IS a problem&quot;, &quot;IT IS
+likely that he will go&quot;.</li><li>SFI connects &quot;filler&quot; subjects like &quot;it&quot; and &quot;there&quot; to verbs in
+cases with subject-verb inversion: &quot;IS THERE a problem?&quot;, &quot;IS IT
+likely that he will go?&quot;</li><li>SI connects subject nouns to finite verbs in cases of subject-verb
+inversion: &quot;IS JOHN coming?&quot;, &quot;Who DID HE see?&quot;</li><li>SJ connects nouns to conjunctions to form a noun phrase: &quot;I have the
+BALL AND CHAIN with me tonight.&quot;</li><li>SX connects &quot;I&quot; to special first-person verbs lke &quot;was&quot; and &quot;am&quot;.</li><li>SXI connects &quot;I&quot; to first-person verbs in cases of s-v inversion.</li><li>TA is used to connect adjectives like &quot;late&quot; to month names: &quot;We did
+it in LATE DECEMBER&quot;.</li><li>TD connects day-of-the-week words to time expressions like
+&quot;morning&quot;: &quot;We&apos;ll do it MONDAY MORNING&quot;.</li><li>TH connects words that take &quot;that [clause]&quot; complements with the
+word &quot;that&quot;. These include verbs (&quot;She TOLD him THAT...&quot;), nouns
+(&quot;The IDEA THAT...&quot;), and adjectives (&quot;We are CERTAIN THAT&quot;).</li><li>TI is used for titles like &quot;president&quot;, which can be used in certain
+cirumstances without a determiner: &quot;AS PRESIDENT of the company, it
+is my decision&quot;.</li><li>TM is used to connect month names to day numbers: &quot;It happened on
+JANUARY 21&quot;.</li><li>TO connects verbs and adjectives which take infinitival complements
+to the word &quot;to&quot;: &quot;We TRIED TO start the car&quot;, &quot;We are EAGER TO do
+it&quot;.</li><li>TQ is the determiner connector for time expressions acting as
+fronted objects: &quot;How MANY YEARS did it last&quot;.</li><li>TR connects determiners to comparatives: &quot;The better the computer,
+the faster the program.&quot;</li><li>TS connects certain verbs that can take subjunctive clauses as
+complements - &quot;suggest&quot;, &quot;require&quot; - to the word that: &quot;We SUGGESTED
+THAT he go&quot;.</li><li>TW connects days of the week to dates in time expressions: &quot;The
+meeting will be on MONDAY, JANUARY 21&quot;.</li><li>TY is used for certain idiomatic usages of year numbers: &quot;I saw him
+on January 21 , 1990 &quot;. (In this case it connects the day number to
+the year number.)</li><li>TZ is used for certain idiomatic usages of time zones: &quot;The meeting
+starts at 1 p.m. EDT.&quot;</li><li>U is a special connector on nouns, which is disjoined with both the
+determiner and subject-object connectors. It is used in idiomatic
+expressions like &quot;What KIND_OF DOG did you buy?&quot;</li><li>UN connects the words &quot;until&quot; and &quot;since&quot; to certain time phrases
+like &quot;after [clause]&quot;: &quot;You should wait UNTIL AFTER you talk to me&quot;.</li><li>V connects various verbs to idiomatic expressions that may be
+non-adjacent: &quot;We TOOK him FOR_GRANTED&quot;, &quot;We HELD her RESPONSIBLE&quot;.</li><li>VC connects clauses to following coordinating and subordinating
+conjunctions (&quot;Mike STAYED SO he could see her&quot;).</li><li>VJ connects verbs to conjunctions: &quot;He RAN AND JUMPED&quot;.</li><li>W connects the subjects of main clauses to the wall, in ordinary
+declaratives, imperatives, and most questions (except yes-no
+questions). It also connects coordinating conjunctions to following
+clauses: &quot;We left BUT SHE stayed&quot;.</li><li>WN connects the word &quot;when&quot; to time nouns like &quot;year&quot;: &quot;The YEAR
+WHEN we lived in England was wonderful&quot;.</li><li>WR connects the word &quot;where&quot; to a few verbs like &quot;put&quot; in questions
+like &quot;WHERE did you PUT it?&quot;.</li><li>WV connects the verbs of main clauses to the wall.</li><li>X is used with punctuation, to connect punctuation symbols either to
+words or to each other. For example, in this case, POODLE connects
+to commas on either side: &quot;The dog , a POODLE , was black.&quot;</li><li>XJ provides support for various idiomatic coordinating expressions,
+such as &quot;... NOT ONLY x, BUT y&quot;: &quot;You should NOT ONLY ask for your
+money back, BUT demand it.&quot;</li><li>Y is used in certain idiomatic time and place expressions, to
+connect quantity expressions to the head word of the expression: &quot;He
+left three HOURS AGO&quot;, &quot;She lives three MILES FROM the station&quot;.</li><li>YP connects plural noun forms ending in s to &quot;&apos;&quot; in possessive
+constructions: &quot;The STUDENTS &apos; rooms are large&quot;.</li><li>YS connects nouns to the possessive suffix &quot;&apos;s&quot;: &quot;JOHN &apos;S dog is
+black&quot;.</li><li>Z connects the preposition &quot;as&quot; to certain verbs: &quot;AS we EXPECTED,
+he was late&quot;.</li><li>ZZZ is a special trick connector, used to manage blank spaces during
+parsing. It is typically used only to handle complex morphology
+spliting. It should be invisible to the ordinary user.</li></ul></div></div></div></body></html>

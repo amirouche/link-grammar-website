@@ -9,7 +9,7 @@ the parser is to review the original papers describing it:
 - [Grammatical Trigrams: A Probabilistic Model of Link Grammar](http://www.cs.cmu.edu/afs/cs.cmu.edu/project/link/pub/www/papers/ps/gram3gram.pdf)
 
 There is an extensive set of pages
-[documenting the dictionary](http://www.abisource.com/projects/link-grammar/dict/index.html);
+[documenting the dictionary](documentation/dictionary/);
 specifically, the names of links and their meanings, as well as how to
 write new rules. There is also a
 [short primer for creating dictionaries for new languages](http://ling.osu.edu/~jonsafari/link-grammar/primer.html). There
