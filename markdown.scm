@@ -139,17 +139,19 @@ list ATTRS and the child nodes in BODY."
 ;;; main: markdown to html
 ;;;
 
+(define ROOT (or (getenv "ROOT") "/"))
+
 (define-public (main args)
   (sxml->html `(html
                 (head
                  (meta (@ (charset "utf-8")))
                  (title "Link Grammar")
                  (link (@ (rel "stylesheet")
-                          (href "/static/normalize.css")))
-                 (link (@ (rel "stylesheet")
                           (href "https://fonts.googleapis.com/css?family=Muli|Ovo")))
                  (link (@ (rel "stylesheet")
-                          (href "/static/main.css"))))
+                          (href ,(string-append ROOT "static/normalize.css"))))
+                 (link (@ (rel "stylesheet")
+                          (href ,(string-append ROOT "static/main.css")))))
                 (body
                  (div (@ (id "overlay")))
                  (div (@ (id "container"))
