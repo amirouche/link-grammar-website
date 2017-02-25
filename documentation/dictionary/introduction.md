@@ -400,7 +400,7 @@ how WordNet senses can be correlated with disjuncts.
 
 It is often the case that there are multiple different parses for a
 sentence; some of the parses are far more likely to be correct than
-others. To capture this notion of liklihood or parse ranking, *Link
+others. To capture this notion of likelihood or parse ranking, *Link
 Grammar* has a cost system. Different connectors or disjuncts can be
 assigned different costs; the parse with the lowest cost is the most
 likely parse. Roughly speaking, costs can be understood as minus the
